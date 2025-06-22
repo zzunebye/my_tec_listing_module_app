@@ -8,22 +8,6 @@ enum ViewMode { list, map }
 
 enum SearchMode { meetingRoom, coworking, dayOffice, eventSpace }
 
-class FilterState {
-  final int capacity;
-  final DateTime date;
-  final DateTime startTime;
-  final DateTime endTime;
-  final bool canVideoConference;
-
-  FilterState({
-    required this.capacity,
-    required this.date,
-    required this.startTime,
-    required this.endTime,
-    required this.canVideoConference,
-  });
-}
-
 class BookingListScreen extends StatefulHookWidget {
   const BookingListScreen({super.key});
 

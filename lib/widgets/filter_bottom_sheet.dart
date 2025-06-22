@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:my_tec_listing_module_app/screens/booking_list_screen.dart';
+import 'package:my_tec_listing_module_app/presentation/providers/meeting_room_filter_state.dart';
 import 'package:my_tec_listing_module_app/widgets/titled_form_field.dart';
 
 class FilterBottomSheet extends StatelessWidget {
   const FilterBottomSheet({super.key, required this.filterState, required this.onApply, required this.onReset});
 
-  final void Function(FilterState) onApply;
-  final void Function(FilterState) onReset;
+  final void Function(MeetingRoomFilter) onApply;
+  final void Function(MeetingRoomFilter) onReset;
 
-  final FilterState filterState;
+  final MeetingRoomFilter filterState;
 
   @override
   Widget build(BuildContext context) {

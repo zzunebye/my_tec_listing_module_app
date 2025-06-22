@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:my_tec_listing_module_app/screens/booking_list_screen.dart';
+import 'package:my_tec_listing_module_app/presentation/providers/meeting_room_filter_state.dart';
 import 'package:my_tec_listing_module_app/widgets/filter_bottom_sheet.dart';
 
 class WrappedFilters extends HookWidget {
   const WrappedFilters({super.key});
 
-  void openFilterDialog(BuildContext context, FilterState filterState) {
+  void openFilterDialog(BuildContext context, MeetingRoomFilter filterState) {
     showModalBottomSheet(
       isScrollControlled: true,
       enableDrag: true,
@@ -25,7 +25,7 @@ class WrappedFilters extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final filterState = useState(
-      FilterState(
+      MeetingRoomFilter(
         capacity: 0,
         date: DateTime.now(),
         startTime: DateTime.now(),
