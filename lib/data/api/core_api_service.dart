@@ -1,4 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
 import 'package:my_tec_listing_module_app/data/dto/meeting_room_pricing_dto.dart';
 import 'package:my_tec_listing_module_app/data/dto/responses/get_cities_response_dto.dart';
 import 'package:my_tec_listing_module_app/data/dto/responses/meeting_room_response_dto.dart';
@@ -88,9 +89,9 @@ class CoreApiService {
     return rooms;
   }
 
-  Future<List<Map>> getCentres() async {
+  Future<List<CentreDto>> getCentres() async {
     final response = await _dioClient.dio.get(CoreApiEndpoints.centreGroups);
-    final List<Map> data = response.data['data'] ?? response.data;
+    final List<CentreDto> data = (response.data['data'] ?? response.data).map((e) => CentreDto.fromJson(e)).toList();
     return data;
   }
 
