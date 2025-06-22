@@ -6,7 +6,7 @@ part of 'city_list_state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$cityListStateHash() => r'636616e3f30093551456dc983735ec5866dec5c5';
+String _$cityListStateHash() => r'38227e300354a11e7944d74c8add5f35999abbfb';
 
 /// See also [CityListState].
 @ProviderFor(CityListState)

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:my_tec_listing_module_app/providers/city_list_state.dart';
+import 'package:my_tec_listing_module_app/presentation/providers/city_list_state.dart';
 
 class SplashScreen extends HookConsumerWidget {
   const SplashScreen({super.key});

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_tec_listing_module_app/data/dto/city_dto.dart';
-import 'package:my_tec_listing_module_app/providers/city_list_state.dart';
+import 'package:my_tec_listing_module_app/presentation/providers/city_list_state.dart';
 
 class CitySelectionDialog extends HookConsumerWidget {
   const CitySelectionDialog({super.key, required this.onCitySaved, required this.currentCity});

@@ -11,14 +11,14 @@ import '../../core/dio_client.dart';
 // import '../models/centre_model.dart';
 // import '../models/city_model.dart';
 
-part 'booking_api_service.g.dart';
+part 'core_api_service.g.dart';
 
 @riverpod
-MeetingRoomApiService bookingApiService(Ref ref) {
-  return MeetingRoomApiService(ref.watch(dioProvider));
+CoreApiService coreApiService(Ref ref) {
+  return CoreApiService(ref.watch(dioProvider));
 }
 
-class MeetingRoomApiEndpoints {
+class CoreApiEndpoints {
   static const String baseUrl = 'https://octo.pr-product-core.executivecentre.net/core-api/api/v1/';
 
   // Room endpoints
@@ -31,10 +31,10 @@ class MeetingRoomApiEndpoints {
   static const String cities = 'cities';
 }
 
-class MeetingRoomApiService {
+class CoreApiService {
   final DioClient _dioClient;
 
-  MeetingRoomApiService(this._dioClient);
+  CoreApiService(this._dioClient);
 
   Future<List<Map>> getAvailableRooms({
     required DateTime startDate,
@@ -42,7 +42,7 @@ class MeetingRoomApiService {
     required String cityCode,
   }) async {
     final response = await _dioClient.dio.get(
-      MeetingRoomApiEndpoints.roomAvailabilities,
+      CoreApiEndpoints.roomAvailabilities,
       queryParameters: {
         'startDate': startDate.toIso8601String(),
         'endDate': endDate.toIso8601String(),
@@ -62,7 +62,7 @@ class MeetingRoomApiService {
     String? profileId,
   }) async {
     final response = await _dioClient.dio.get(
-      MeetingRoomApiEndpoints.roomPricings,
+      CoreApiEndpoints.roomPricings,
       queryParameters: {
         'startDate': startDate.toIso8601String(),
         'endDate': endDate.toIso8601String(),
@@ -79,7 +79,7 @@ class MeetingRoomApiService {
 
   Future<MeetingRoomResponseDto> getAllRooms({int pageSize = 10, int pageNumber = 1}) async {
     final response = await _dioClient.dio.get(
-      MeetingRoomApiEndpoints.meetingRooms,
+      CoreApiEndpoints.meetingRooms,
       queryParameters: {'pageSize': pageSize, 'pageNumber': pageNumber},
     );
 
@@ -89,14 +89,14 @@ class MeetingRoomApiService {
   }
 
   Future<List<Map>> getCentres() async {
-    final response = await _dioClient.dio.get(MeetingRoomApiEndpoints.centreGroups);
+    final response = await _dioClient.dio.get(CoreApiEndpoints.centreGroups);
     final List<Map> data = response.data['data'] ?? response.data;
     return data;
   }
 
   Future<GetCitiesResponseDto> getCities({int pageSize = 10, int pageNumber = 1}) async {
     final response = await _dioClient.dio.get(
-      MeetingRoomApiEndpoints.cities,
+      CoreApiEndpoints.cities,
       queryParameters: {'pageSize': pageSize, 'pageNumber': pageNumber},
     );
 
