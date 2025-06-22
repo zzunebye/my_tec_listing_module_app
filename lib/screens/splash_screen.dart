@@ -9,7 +9,6 @@ class SplashScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final cityProvider = ref.watch(cityListStateProvider);
 
-    print("${cityProvider}");
 
     ref.listen(cityListStateProvider, (previous, next) {
       if (next.value != null) {
