@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:my_tec_listing_module_app/presentation/providers/centre_list_state.dart';
 import 'package:my_tec_listing_module_app/screens/booking_list_screen.dart';
 import 'package:my_tec_listing_module_app/screens/splash_screen.dart';
 
-class MyTECApp extends StatelessWidget {
+class MyTECApp extends HookConsumerWidget {
   const MyTECApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final centreList = ref.watch(centreListStateProvider);
     return MaterialApp(
       title: 'TEC Booking',
       theme: AppTheme.lightTheme,
