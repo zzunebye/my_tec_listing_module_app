@@ -21,10 +21,31 @@ class MyTECApp extends StatelessWidget {
 
 class AppTheme {
   static final lightTheme = ThemeData(
-    colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.light),
+    colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo, brightness: Brightness.light),
+    inputDecorationTheme: AppTheme.inputDecorationTheme,
+    chipTheme: ChipThemeData(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      labelStyle: TextStyle(color: Colors.black, fontSize: 12.0),
+      backgroundColor: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 4.0),
+      labelPadding: EdgeInsets.only(left: 2.0, right: 4.0),
+    ),
   );
 
   static final darkTheme = ThemeData(
-    colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.dark),
+    colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo, brightness: Brightness.dark),
+    inputDecorationTheme: AppTheme.inputDecorationTheme,
+  );
+  static final inputDecorationTheme = InputDecorationTheme(
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
+    labelStyle: TextStyle(color: Colors.grey),
+    contentPadding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+    floatingLabelBehavior: FloatingLabelBehavior.never,
+    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+    
+    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+    errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+    focusedErrorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+  
   );
 }

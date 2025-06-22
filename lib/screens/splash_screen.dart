@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:my_tec_listing_module_app/providers/city_list_state.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends HookConsumerWidget {
   const SplashScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    Future.delayed(const Duration(milliseconds: 100), () {
-      Navigator.pushReplacementNamed(context, '/booking-list');
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cityProvider = ref.watch(cityListStateProvider);
+
+    print("${cityProvider}");
+
+    ref.listen(cityListStateProvider, (previous, next) {
+      if (next.value != null) {
+        Navigator.pushReplacementNamed(context, '/booking-list');
+      }
     });
+
+    // Future.delayed(const Duration(milliseconds: 100), () {
+    //   Navigator.pushReplacementNamed(context, '/booking-list');
+    // });
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(

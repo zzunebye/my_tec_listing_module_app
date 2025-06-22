@@ -1,9 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:my_tec_listing_module_app/screens/draggable_sheet_with_list.dart';
+import 'package:my_tec_listing_module_app/widgets/city_selection_dialog.dart';
+import 'package:my_tec_listing_module_app/widgets/filter_bottom_sheet.dart';
+import 'package:my_tec_listing_module_app/widgets/filter_chip.dart' hide FilterChip;
 import 'package:my_tec_listing_module_app/widgets/room_card.dart';
 
 enum ViewMode { list, map }
+
+enum SearchMode { meetingRoom, coworking, dayOffice, eventSpace }
+
+class FilterState {
+  final int capacity;
+  final DateTime date;
+  final DateTime startTime;
+  final DateTime endTime;
+  final bool canVideoConference;
+
+  FilterState({
+    required this.capacity,
+    required this.date,
+    required this.startTime,
+    required this.endTime,
+    required this.canVideoConference,
+  });
+}
 
 class BookingListScreen extends StatefulHookWidget {
   const BookingListScreen({super.key});
@@ -36,6 +56,8 @@ class _BookingListScreenState extends State<BookingListScreen> {
     final topTapController = useTabController(initialLength: 4);
     final viewMode = useState(ViewMode.map);
     final isFullScreen = useState(false);
+    final currentCity = useState<String?>('Hong Kong');
+    final searchMode = useState<SearchMode>(SearchMode.meetingRoom);
 
     useEffect(() {
       void updateFullScreen() {
@@ -45,27 +67,15 @@ class _BookingListScreenState extends State<BookingListScreen> {
         } else {
           isFullScreen.value = false;
         }
-        print('isFullScreen: ${isFullScreen.value}');
       }
 
       void updateViewMode() {
         final currentSize = draggableController.size;
         if (currentSize >= 0.5) {
           viewMode.value = ViewMode.list;
-          // isFullScreen.value = currentSize == 1.0;
         } else if (currentSize <= 0.2) {
           viewMode.value = ViewMode.map;
-          // isFullScreen.value = false;
         }
-        print('Sheet size: $currentSize');
-        print('View mode: ${viewMode.value}');
-        // if (currentSize >= 0.8) {
-        //   viewMode.value = ViewMode.list;
-        // } else if (currentSize >= 0.4) {
-        //   viewMode.value = ViewMode.listHalf;
-        // } else {
-        //   viewMode.value = ViewMode.map;
-        // }
       }
 
       draggableController.addListener(updateViewMode);
@@ -78,13 +88,13 @@ class _BookingListScreenState extends State<BookingListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const DraggableSheetWithList()),
-          ),
-        ),
+        // leading: IconButton(
+        //   icon: const Icon(Icons.arrow_back),
+        //   onPressed: () => Navigator.pushReplacement(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => const DraggableSheetWithList()),
+        //   ),
+        // ),
         bottom: TabBar(
           controller: topTapController,
           isScrollable: true,
@@ -97,10 +107,22 @@ class _BookingListScreenState extends State<BookingListScreen> {
         ),
         title: Center(
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => CitySelectionDialog(
+                  onCitySaved: (String city) {
+                    currentCity.value = city;
+                  },
+                  currentCity: currentCity.value ?? 'Hong Kong',
+                ),
+                barrierDismissible: false,
+                useSafeArea: true,
+              );
+            },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Text('Hong Kong'), SizedBox(width: 8), Icon(Icons.navigation_rounded)],
+              children: [Text(currentCity.value ?? 'Hong Kong'), SizedBox(width: 8), Icon(Icons.navigation_rounded)],
             ),
           ),
         ),
@@ -188,7 +210,7 @@ class _BookingListScreenState extends State<BookingListScreen> {
                         : SliverToBoxAdapter(child: SizedBox.shrink()),
                     SliverToBoxAdapter(child: SizedBox(height: 8)),
                     // Filter Section
-                    const SliverToBoxAdapter(child: WrappedFilter()),
+                    const SliverToBoxAdapter(child: WrappedFilters()),
                     SliverToBoxAdapter(child: SizedBox(height: 8)),
                     // List Content with SliverLayoutBuilder
                     SliverLayoutBuilder(
@@ -223,43 +245,75 @@ class _BookingListScreenState extends State<BookingListScreen> {
   }
 }
 
-class WrappedFilter extends StatelessWidget {
-  const WrappedFilter({super.key});
+class WrappedFilters extends HookWidget {
+  const WrappedFilters({super.key});
+
+  void openFilterDialog(BuildContext context, FilterState filterState) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      enableDrag: true,
+      useRootNavigator: true,
+      context: context,
+      builder: (context) => SafeArea(
+        child: FilterBottomSheet(
+          filterState: filterState,
+          onApply: (filterState) {},
+          onReset: (filterState) {},
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final filterState = useState(
+      FilterState(
+        capacity: 0,
+        date: DateTime.now(),
+        startTime: DateTime.now(),
+        endTime: DateTime.now(),
+        canVideoConference: false,
+      ),
+    );
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Wrap(
         spacing: 4.0,
         // runSpacing: 8.0,
         children: [
-          FilterChip(key: Key('filter_chip_0'), label: 'Filter', icon: Icons.people),
-          FilterChip(key: Key('filter_chip_1'), label: 'Today', icon: Icons.access_time),
-          FilterChip(key: Key('filter_chip_2'), label: '06:15 PM - 06:45 PM', icon: Icons.people),
-          FilterChip(key: Key('filter_chip_3'), label: '4 Seats', icon: Icons.calendar_today),
-          FilterChip(key: Key('filter_chip_4'), label: 'All centres in the City', icon: Icons.filter_list),
+          FilterChip(
+            avatar: Icon(Icons.filter_list, size: 18.0, color: Theme.of(context).colorScheme.onSurface),
+            key: Key('filter_chip_0'),
+            label: Text('Filter'),
+            onSelected: (selected) => openFilterDialog(context, filterState.value),
+          ),
+          FilterChip(
+            avatar: Icon(Icons.today, size: 18.0, color: Theme.of(context).colorScheme.onSurface),
+            key: Key('filter_chip_1'),
+            label: Text('Today'),
+            onSelected: (selected) => openFilterDialog(context, filterState.value),
+          ),
+          FilterChip(
+            avatar: Icon(Icons.access_time, size: 18.0, color: Theme.of(context).colorScheme.onSurface),
+            key: Key('filter_chip_2'),
+            label: Text('06:15 PM - 06:45 PM'),
+            onSelected: (selected) => openFilterDialog(context, filterState.value),
+          ),
+          FilterChip(
+            avatar: Icon(Icons.chair, size: 18.0, color: Theme.of(context).colorScheme.onSurface),
+            key: Key('filter_chip_3'),
+            label: Text('4 Seats'),
+            onSelected: (selected) => openFilterDialog(context, filterState.value),
+          ),
+          FilterChip(
+            avatar: Icon(Icons.location_on_outlined, size: 18.0, color: Theme.of(context).colorScheme.onSurface),
+            key: Key('filter_chip_4'),
+            label: Text('All centres in the City'),
+            onSelected: (selected) => openFilterDialog(context, filterState.value),
+          ),
         ],
       ),
-    );
-  }
-}
-
-class FilterChip extends StatelessWidget {
-  const FilterChip({super.key, required this.label, required this.icon});
-
-  final String label;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Chip(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-      avatar: Icon(icon, size: 18.0, color: Theme.of(context).colorScheme.surface),
-      label: Text(label, style: Theme.of(context).textTheme.labelMedium),
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-      labelPadding: const EdgeInsets.only(left: 2.0, right: 4.0),
     );
   }
 }
