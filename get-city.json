@@ -1,0 +1,402 @@
+{
+    "items": [
+        {
+            "cityId": 35249,
+            "countryId": 606,
+            "code": "HKG",
+            "name": "Hong Kong",
+            "timeZone": {
+                "displayName": "(UTC+08:00) GMT+08:00",
+                "standardName": "GMT+08:00",
+                "baseUtcOffset": "08:00:00"
+            },
+            "isActive": true,
+            "accountEmail": "test-hongkong-account@executivecentre.com.invalid",
+            "currencyIsoCode": "HKD",
+            "generalEmail": "test-hongkong-general@executivecentre.com.invalid",
+            "generalPhone": "+852 2297 0222",
+            "meEmail": "test-hongkong-mr@executivecentre.com.invalid",
+            "nameTranslation": {
+                "en": "Hong Kong",
+                "jp": "香港",
+                "kr": "홍콩",
+                "zhHans": "香港",
+                "zhHant": "香港"
+            },
+            "paymentGateway": "TEC_Payment_Gateway",
+            "paymentMethod": "Visa;MasterCard;JCB;American Express",
+            "sequence": 2,
+            "voCwEmail": "test-hongkong-cwvo@executivecentre.com.invalid",
+            "bdGroupEmail": "test-hongkong-bdgroupl@executivecentre.com.invalid",
+            "region": {
+                "id": "a3QBW00000000jB2AQ",
+                "name": {
+                    "en": "Greater China",
+                    "jp": "中華圏",
+                    "kr": "중화권",
+                    "zhHans": "大中华",
+                    "zhHant": "大中華"
+                }
+            }
+        },
+        {
+            "cityId": 35250,
+            "countryId": 35148,
+            "code": "SGH",
+            "name": "Shanghai",
+            "timeZone": {
+                "displayName": "(UTC+08:00) GMT+08:00",
+                "standardName": "GMT+08:00",
+                "baseUtcOffset": "08:00:00"
+            },
+            "isActive": true,
+            "accountEmail": "test-shanghai-account@executivecentre.com.invalid",
+            "currencyIsoCode": "CNY",
+            "generalEmail": "test-shanghai-general@executivecentre.com.invalid",
+            "generalPhone": "+86 21 5060 1886",
+            "meEmail": "test-shanghai-mr@executivecentre.com.invalid",
+            "nameTranslation": {
+                "en": "Shanghai",
+                "jp": "上海",
+                "kr": "상해",
+                "zhHans": "上海",
+                "zhHant": "上海"
+            },
+            "paymentGateway": "Wechat_Alipay",
+            "paymentMethod": "Visa;MasterCard;JCB;American Express",
+            "sequence": 10,
+            "voCwEmail": "test-shanghai-cwvo@executivecentre.com.invalid",
+            "bdGroupEmail": "test-shanghai-bdgroupl@executivecentre.com.invalid",
+            "region": {
+                "id": "a3QBW00000000jB2AQ",
+                "name": {
+                    "en": "Greater China",
+                    "jp": "中華圏",
+                    "kr": "중화권",
+                    "zhHans": "大中华",
+                    "zhHant": "大中華"
+                }
+            }
+        },
+        {
+            "cityId": 46561,
+            "countryId": 46460,
+            "code": "SYD",
+            "name": "Sydney",
+            "timeZone": {
+                "displayName": "(UTC+10:00) GMT+10:00",
+                "standardName": "GMT+10:00",
+                "baseUtcOffset": "10:00:00"
+            },
+            "isActive": true,
+            "accountEmail": "test-sydney-account@executivecentre.com.invalid",
+            "currencyIsoCode": "AUD",
+            "generalEmail": "test-sydney-general@executivecentre.com.invalid",
+            "generalPhone": "+61 2 8823 3688",
+            "meEmail": "test-sydney-mr@executivecentre.com.invalid",
+            "nameTranslation": {
+                "en": "Sydney",
+                "jp": "シドニー",
+                "kr": "시드니",
+                "zhHans": "悉尼",
+                "zhHant": "悉尼"
+            },
+            "paymentGateway": "TEC_Payment_Gateway",
+            "paymentMethod": "Visa;MasterCard;JCB;American Express",
+            "sequence": 10,
+            "voCwEmail": "test-sydney-cwvo@executivecentre.com.invalid",
+            "bdGroupEmail": "test-sydney-bdgroupl@executivecentre.com.invalid",
+            "region": {
+                "id": "a3QBW00000000hZ2AQ",
+                "name": {
+                    "en": "Australia",
+                    "jp": "オーストラリア",
+                    "kr": "호주",
+                    "zhHans": "澳大利亚",
+                    "zhHant": "澳洲"
+                }
+            }
+        },
+        {
+            "cityId": 51106,
+            "countryId": 51005,
+            "code": "SIN",
+            "name": "Singapore",
+            "timeZone": {
+                "displayName": "(UTC+08:00) GMT+08:00",
+                "standardName": "GMT+08:00",
+                "baseUtcOffset": "08:00:00"
+            },
+            "isActive": true,
+            "accountEmail": "test-singapore-account@executivecentre.com.invalid",
+            "currencyIsoCode": "SGD",
+            "generalEmail": "test-singapore-general@executivecentre.com.invalid",
+            "generalPhone": "+65 6808 6288",
+            "meEmail": "test-singapore-mr@executivecentre.com.invalid",
+            "nameTranslation": {
+                "en": "Singapore",
+                "jp": "シンガポール",
+                "kr": "싱가포르",
+                "zhHans": "新加坡",
+                "zhHant": "新加坡"
+            },
+            "paymentGateway": "TEC_Payment_Gateway",
+            "paymentMethod": "Visa;MasterCard;JCB;American Express",
+            "sequence": 10,
+            "voCwEmail": "test-singapore-cwvo@executivecentre.com.invalid",
+            "bdGroupEmail": "test-singapore-bdgroupl@executivecentre.com.invalid",
+            "region": {
+                "id": "a3QBW00000000rF2AQ",
+                "name": {
+                    "en": "Singapore",
+                    "jp": "シンガポール",
+                    "kr": "싱가포르",
+                    "zhHans": "新加坡",
+                    "zhHant": "新加坡"
+                }
+            }
+        },
+        {
+            "cityId": 62519,
+            "countryId": 35148,
+            "code": "BJS",
+            "name": "Beijing",
+            "timeZone": {
+                "displayName": "(UTC+08:00) GMT+08:00",
+                "standardName": "GMT+08:00",
+                "baseUtcOffset": "08:00:00"
+            },
+            "isActive": true,
+            "accountEmail": "test-beijing-account@executivecentre.com.invalid",
+            "currencyIsoCode": "CNY",
+            "generalEmail": "test-beijing-general@executivecentre.com.invalid",
+            "generalPhone": "+86 10 6563 7888",
+            "meEmail": "test-beijing-mr@executivecentre.com.invalid",
+            "nameTranslation": {
+                "en": "Beijing",
+                "jp": "北京",
+                "kr": "북경",
+                "zhHans": "北京",
+                "zhHant": "北京"
+            },
+            "paymentGateway": "Wechat_Alipay",
+            "paymentMethod": "Visa;MasterCard;JCB;American Express",
+            "sequence": 10,
+            "voCwEmail": "test-beijing-cwvo@executivecentre.com.invalid",
+            "bdGroupEmail": "test-beijing-bdgroupl@executivecentre.com.invalid",
+            "region": {
+                "id": "a3QBW00000000jB2AQ",
+                "name": {
+                    "en": "Greater China",
+                    "jp": "中華圏",
+                    "kr": "중화권",
+                    "zhHans": "大中华",
+                    "zhHant": "大中華"
+                }
+            }
+        },
+        {
+            "cityId": 62520,
+            "countryId": 35148,
+            "code": "TNJ",
+            "name": "Tianjin",
+            "timeZone": {
+                "displayName": "(UTC+08:00) GMT+08:00",
+                "standardName": "GMT+08:00",
+                "baseUtcOffset": "08:00:00"
+            },
+            "isActive": true,
+            "accountEmail": "test-tianjin-account@executivecentre.com.invalid",
+            "currencyIsoCode": "CNY",
+            "generalEmail": "test-tianjin-general@executivecentre.com.invalid",
+            "generalPhone": "+86 22 5830 7888",
+            "meEmail": "test-tianjin-mr@executivecentre.com.invalid",
+            "nameTranslation": {
+                "en": "Tianjin",
+                "jp": "天津",
+                "kr": "톈진",
+                "zhHans": "天津",
+                "zhHant": "天津"
+            },
+            "paymentGateway": "Wechat_Alipay",
+            "paymentMethod": "Visa;MasterCard;JCB;American Express",
+            "sequence": 10,
+            "voCwEmail": "test-tianjin-cwvo@executivecentre.com.invalid",
+            "bdGroupEmail": "test-tianjin-bdgroupl@executivecentre.com.invalid",
+            "region": {
+                "id": "a3QBW00000000jB2AQ",
+                "name": {
+                    "en": "Greater China",
+                    "jp": "中華圏",
+                    "kr": "중화권",
+                    "zhHans": "大中华",
+                    "zhHant": "大中華"
+                }
+            }
+        },
+        {
+            "cityId": 95142,
+            "countryId": 35148,
+            "code": "GGZ",
+            "name": "Guangzhou",
+            "timeZone": {
+                "displayName": "(UTC+08:00) GMT+08:00",
+                "standardName": "GMT+08:00",
+                "baseUtcOffset": "08:00:00"
+            },
+            "isActive": true,
+            "accountEmail": "test-guangzhou-account@executivecentre.com.invalid",
+            "currencyIsoCode": "CNY",
+            "generalEmail": "test-guangzhou-general@executivecentre.com.invalid",
+            "generalPhone": "+86 20 2831 7333",
+            "meEmail": "test-guangzhou-mr@executivecentre.com.invalid",
+            "nameTranslation": {
+                "en": "Guangzhou",
+                "jp": "広州",
+                "kr": "광저우",
+                "zhHans": "广州",
+                "zhHant": "廣州"
+            },
+            "paymentGateway": "Wechat_Alipay",
+            "paymentMethod": "Visa;MasterCard;JCB;American Express",
+            "sequence": 10,
+            "voCwEmail": "test-guangzhou-cwvo@executivecentre.com.invalid",
+            "bdGroupEmail": "test-guangzhou-bdgroupl@executivecentre.com.invalid",
+            "region": {
+                "id": "a3QBW00000000jB2AQ",
+                "name": {
+                    "en": "Greater China",
+                    "jp": "中華圏",
+                    "kr": "중화권",
+                    "zhHans": "大中华",
+                    "zhHant": "大中華"
+                }
+            }
+        },
+        {
+            "cityId": 95143,
+            "countryId": 35148,
+            "code": "SNZ",
+            "name": "Shenzhen",
+            "timeZone": {
+                "displayName": "(UTC+08:00) GMT+08:00",
+                "standardName": "GMT+08:00",
+                "baseUtcOffset": "08:00:00"
+            },
+            "isActive": true,
+            "accountEmail": "test-shenzhen-account@executivecentre.com.invalid",
+            "currencyIsoCode": "CNY",
+            "generalEmail": "test-shenzhen-general@executivecentre.com.invalid",
+            "generalPhone": "+86 755 3304 3333",
+            "meEmail": "test-shenzhen-mr@executivecentre.com.invalid",
+            "nameTranslation": {
+                "en": "Shenzhen",
+                "jp": "深セン",
+                "kr": "센젠",
+                "zhHans": "深圳",
+                "zhHant": "深圳"
+            },
+            "paymentGateway": "Wechat_Alipay",
+            "paymentMethod": "Visa;MasterCard;JCB;American Express",
+            "sequence": 10,
+            "voCwEmail": "test-shenzhen-cwvo@executivecentre.com.invalid",
+            "bdGroupEmail": "test-shenzhen-bdgroupl@executivecentre.com.invalid",
+            "region": {
+                "id": "a3QBW00000000jB2AQ",
+                "name": {
+                    "en": "Greater China",
+                    "jp": "中華圏",
+                    "kr": "중화권",
+                    "zhHans": "大中华",
+                    "zhHant": "大中華"
+                }
+            }
+        },
+        {
+            "cityId": 98273,
+            "countryId": 98173,
+            "code": "SEL",
+            "name": "Seoul",
+            "timeZone": {
+                "displayName": "(UTC+09:00) GMT+09:00",
+                "standardName": "GMT+09:00",
+                "baseUtcOffset": "09:00:00"
+            },
+            "isActive": true,
+            "accountEmail": "test-seoul-account@executivecentre.com.invalid",
+            "currencyIsoCode": "KRW",
+            "generalEmail": "test-seoul-general@executivecentre.com.invalid",
+            "generalPhone": "+82 2 3782 4888",
+            "meEmail": "test-seoul-mr@executivecentre.com.invalid",
+            "nameTranslation": {
+                "en": "Seoul",
+                "jp": "ソウル",
+                "kr": "서울",
+                "zhHans": "首尔",
+                "zhHant": "首爾"
+            },
+            "paymentGateway": "TEC_Payment_Gateway",
+            "paymentMethod": "Visa;MasterCard;American Express",
+            "sequence": 10,
+            "voCwEmail": "test-seoul-cwvo@executivecentre.com.invalid",
+            "bdGroupEmail": "test-seoul-bdgroupl@executivecentre.com.invalid",
+            "region": {
+                "id": "a3QBW00000000sr2AA",
+                "name": {
+                    "en": "South Korea",
+                    "jp": "韓国",
+                    "kr": "대한민국",
+                    "zhHans": "南韩",
+                    "zhHant": "南韓"
+                }
+            }
+        },
+        {
+            "cityId": 98274,
+            "countryId": 98174,
+            "code": "TPE",
+            "name": "Taipei",
+            "timeZone": {
+                "displayName": "(UTC+08:00) GMT+08:00",
+                "standardName": "GMT+08:00",
+                "baseUtcOffset": "08:00:00"
+            },
+            "isActive": true,
+            "accountEmail": "test-taipei-account@executivecentre.com.invalid",
+            "currencyIsoCode": "TWD",
+            "generalEmail": "test-taipei-general@executivecentre.com.invalid",
+            "generalPhone": "+886 2 8758 2888",
+            "meEmail": "test-taipei-mr@executivecentre.com.invalid",
+            "nameTranslation": {
+                "en": "Taipei",
+                "jp": "台北",
+                "kr": "타이페이",
+                "zhHans": "台北",
+                "zhHant": "台北"
+            },
+            "paymentGateway": "TEC_Payment_Gateway",
+            "paymentMethod": "Visa;MasterCard;JCB;American Express",
+            "sequence": 10,
+            "voCwEmail": "test-taipei-cwvo@executivecentre.com.invalid",
+            "bdGroupEmail": "test-taipei-bdgroupl@executivecentre.com.invalid",
+            "region": {
+                "id": "a3QBW00000000jB2AQ",
+                "name": {
+                    "en": "Greater China",
+                    "jp": "中華圏",
+                    "kr": "중화권",
+                    "zhHans": "大中华",
+                    "zhHant": "大中華"
+                }
+            }
+        }
+    ],
+    "pageCount": 4,
+    "totalItemCount": 37,
+    "pageNumber": 1,
+    "pageSize": 10,
+    "hasPreviousPage": false,
+    "hasNextPage": true,
+    "isFirstPage": true,
+    "isLastPage": false
+}

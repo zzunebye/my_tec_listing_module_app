@@ -1,16 +1,21 @@
 # my_tec_listing_module_app
 
-A new Flutter project.
+This repository is a demo of a interview process with TEC. 
 
-## Getting Started
+The goal is to create a Flutter-based meeting room listing module with filtering capabilities and robust state management. This is a core booking feature that helps users discover and filter available meeting rooms.
 
-This project is a starting point for a Flutter application.
+## Features
+- [ ] API integration with the TEC REST API provided
+- [ ] State management with Provider
+- [ ] Filtering capabilities in Filter page
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Setup
+### How to run
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### How to build
+
+## Architecture overview
+
+
+## Assumptions and Known issues
