@@ -71,13 +71,10 @@ class _BookingListScreenState extends State<BookingListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back),
-        //   onPressed: () => Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => const DraggableSheetWithList()),
-        //   ),
-        // ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => {},
+        ),
         bottom: TabBar(
           controller: topTapController,
           isScrollable: true,
@@ -93,6 +90,9 @@ class _BookingListScreenState extends State<BookingListScreen> {
             builder: (context, ref, child) {
               final currentCity = ref.watch(currentCityStateProvider);
               return TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.onSurface,
+                ),
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -107,6 +107,7 @@ class _BookingListScreenState extends State<BookingListScreen> {
                   );
                 },
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [Text(currentCity), SizedBox(width: 8), Icon(Icons.navigation_rounded)],
                 ),
