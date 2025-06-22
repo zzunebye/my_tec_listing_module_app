@@ -24,7 +24,9 @@ class MeetingRoomFilter {
   final DateTime date;
   final DateTime startTime;
   final DateTime endTime;
+  // TODO: update to be requiredVideoConference
   final bool canVideoConference;
+  final bool requiredWindow;
 
   MeetingRoomFilter({
     this.capacity = 4,
@@ -32,6 +34,7 @@ class MeetingRoomFilter {
     required this.startTime,
     required this.endTime,
     this.canVideoConference = false,
+    this.requiredWindow = false,
   });
 
   @override
@@ -42,11 +45,17 @@ class MeetingRoomFilter {
         other.date == date &&
         other.startTime == startTime &&
         other.endTime == endTime &&
-        other.canVideoConference == canVideoConference;
+        other.canVideoConference == canVideoConference &&
+        other.requiredWindow == requiredWindow;
   }
 
   @override
   int get hashCode {
-    return capacity.hashCode ^ date.hashCode ^ startTime.hashCode ^ endTime.hashCode ^ canVideoConference.hashCode;
+    return capacity.hashCode ^
+        date.hashCode ^
+        startTime.hashCode ^
+        endTime.hashCode ^
+        canVideoConference.hashCode ^
+        requiredWindow.hashCode;
   }
 }
