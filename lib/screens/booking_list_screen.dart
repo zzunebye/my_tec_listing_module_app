@@ -71,14 +71,12 @@ class _BookingListScreenState extends State<BookingListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => {},
-        ),
+        leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => {}),
         bottom: TabBar(
+          onTap: (index) => searchMode.value = SearchMode.values[index],
           controller: topTapController,
           isScrollable: true,
-          tabs: const [
+          tabs: [
             Tab(text: 'Meeting Room'),
             Tab(text: 'Coworking'),
             Tab(text: 'Day Office'),
@@ -90,9 +88,7 @@ class _BookingListScreenState extends State<BookingListScreen> {
             builder: (context, ref, child) {
               final currentCity = ref.watch(currentCityStateProvider);
               return TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.onSurface,
-                ),
+                style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.onSurface),
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -199,26 +195,47 @@ class _BookingListScreenState extends State<BookingListScreen> {
                         : SliverToBoxAdapter(child: SizedBox.shrink()),
                     SliverToBoxAdapter(child: SizedBox(height: 8)),
                     // Filter Section
-                    const SliverToBoxAdapter(child: WrappedFilters()),
-                    SliverToBoxAdapter(child: SizedBox(height: 8)),
+                    if (searchMode.value != SearchMode.eventSpace)
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            const WrappedFilters(),
+                            SizedBox(height: 8),
+                          ],
+                        ),
+                      ),
                     // List Content with SliverLayoutBuilder
                     SliverLayoutBuilder(
                       builder: (context, constraints) {
                         // Use remaining paint extent for available height
                         double availableHeight = constraints.remainingPaintExtent;
 
+                        Widget content;
+                        print(searchMode.value);
+                        switch (searchMode.value) {
+                          case SearchMode.meetingRoom:
+                            content = ListView.builder(
+                              itemCount: 25,
+                              itemBuilder: (BuildContext context, int index) {
+                                return RoomCard();
+                              },
+                            );
+                            break;
+                          case SearchMode.coworking:
+                            content = CoworkingListView(); // 새로운 위젯
+                            break;
+                          case SearchMode.dayOffice:
+                            content = DayOfficeListView(); // 새로운 위젯
+                            break;
+                          case SearchMode.eventSpace:
+                            content = EventSpaceListView(); // 새로운 위젯
+                            break;
+                        }
+
                         return SliverToBoxAdapter(
                           child: SizedBox(
                             height: availableHeight > 100 ? availableHeight : 300, // Fallback height
-                            child: draggableController.size > 0.2
-                                ? ListView.builder(
-                                    controller: listController,
-                                    itemCount: 25,
-                                    itemBuilder: (BuildContext context, int index) {
-                                      return RoomCard();
-                                    },
-                                  )
-                                : SizedBox.shrink(),
+                            child: draggableController.size > 0.2 ? content : SizedBox.shrink(),
                           ),
                         );
                       },
@@ -231,5 +248,32 @@ class _BookingListScreenState extends State<BookingListScreen> {
         ],
       ),
     );
+  }
+}
+
+class CoworkingListView extends StatelessWidget {
+  const CoworkingListView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
+class DayOfficeListView extends StatelessWidget {
+  const DayOfficeListView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
+class EventSpaceListView extends StatelessWidget {
+  const EventSpaceListView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }
