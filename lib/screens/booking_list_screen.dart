@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:my_tec_listing_module_app/presentation/providers/current_city_state.dart';
 import 'package:my_tec_listing_module_app/widgets/city_selection_dialog.dart';
 import 'package:my_tec_listing_module_app/widgets/room_card.dart';
 import 'package:my_tec_listing_module_app/widgets/wrapped_filters.dart';
@@ -38,7 +40,6 @@ class _BookingListScreenState extends State<BookingListScreen> {
     final topTapController = useTabController(initialLength: 4);
     final viewMode = useState(ViewMode.map);
     final isFullScreen = useState(false);
-    final currentCity = useState<String?>('Hong Kong');
     final searchMode = useState<SearchMode>(SearchMode.meetingRoom);
 
     useEffect(() {
@@ -88,24 +89,29 @@ class _BookingListScreenState extends State<BookingListScreen> {
           ],
         ),
         title: Center(
-          child: TextButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => CitySelectionDialog(
-                  onCitySaved: (String city) {
-                    currentCity.value = city;
-                  },
-                  currentCity: currentCity.value ?? 'Hong Kong',
+          child: Consumer(
+            builder: (context, ref, child) {
+              final currentCity = ref.watch(currentCityStateProvider);
+              return TextButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => CitySelectionDialog(
+                      onCitySaved: (String city) {
+                        ref.read(currentCityStateProvider.notifier).state = city;
+                      },
+                      currentCity: currentCity,
+                    ),
+                    barrierDismissible: false,
+                    useSafeArea: true,
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [Text(currentCity), SizedBox(width: 8), Icon(Icons.navigation_rounded)],
                 ),
-                barrierDismissible: false,
-                useSafeArea: true,
               );
             },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [Text(currentCity.value ?? 'Hong Kong'), SizedBox(width: 8), Icon(Icons.navigation_rounded)],
-            ),
           ),
         ),
         actions: [
