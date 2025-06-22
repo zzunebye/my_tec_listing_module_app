@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:my_tec_listing_module_app/screens/draggable_sheet_with_list.dart';
 
-enum ViewMode { list, listHalf, map }
+enum ViewMode { list, map }
 
 class BookingListScreen extends StatefulHookWidget {
   const BookingListScreen({super.key});
@@ -14,25 +14,65 @@ class BookingListScreen extends StatefulHookWidget {
 class _BookingListScreenState extends State<BookingListScreen> {
   double _sheetPosition = 0.5;
   late DraggableScrollableController draggableController;
+  late ScrollController listController;
 
   @override
   void initState() {
     super.initState();
     draggableController = DraggableScrollableController();
+    listController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    draggableController.dispose();
+    listController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final topTapController = useTabController(initialLength: 4);
-    final isScrollingInside = useState(false);
-    final scrollControllerContainer = useRef<ScrollController?>(null);
     final viewMode = useState(ViewMode.map);
+    final isFullScreen = useState(false);
 
     useEffect(() {
-      draggableController.addListener(() {
-        print(draggableController.size);
-      });
-      return null;
+      void updateFullScreen() {
+        final currentSize = draggableController.size;
+        if (currentSize == 1.0) {
+          isFullScreen.value = true;
+        } else {
+          isFullScreen.value = false;
+        }
+        print('isFullScreen: ${isFullScreen.value}');
+      }
+
+      void updateViewMode() {
+        final currentSize = draggableController.size;
+        if (currentSize >= 0.5) {
+          viewMode.value = ViewMode.list;
+          // isFullScreen.value = currentSize == 1.0;
+        } else if (currentSize <= 0.2) {
+          viewMode.value = ViewMode.map;
+          // isFullScreen.value = false;
+        }
+        print('Sheet size: $currentSize');
+        print('View mode: ${viewMode.value}');
+        // if (currentSize >= 0.8) {
+        //   viewMode.value = ViewMode.list;
+        // } else if (currentSize >= 0.4) {
+        //   viewMode.value = ViewMode.listHalf;
+        // } else {
+        //   viewMode.value = ViewMode.map;
+        // }
+      }
+
+      draggableController.addListener(updateViewMode);
+      draggableController.addListener(updateFullScreen);
+      return () {
+        draggableController.removeListener(updateViewMode);
+        draggableController.removeListener(updateFullScreen);
+      };
     }, []);
 
     return Scaffold(
@@ -66,114 +106,170 @@ class _BookingListScreenState extends State<BookingListScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              if (viewMode.value == ViewMode.list || viewMode.value == ViewMode.listHalf) {
+              // isFullScreen.value = false;
+              if (viewMode.value == ViewMode.list) {
                 draggableController.animateTo(
-                  0.1,
+                  0.2,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 );
-                viewMode.value = ViewMode.map;
+
+                // viewMode.value = ViewMode.map;
               } else {
                 draggableController.animateTo(
                   1.0,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 );
-                viewMode.value = ViewMode.list;
+                // viewMode.value = ViewMode.list;
               }
             },
-            icon: viewMode.value == ViewMode.list || viewMode.value == ViewMode.listHalf
-                ? const Icon(Icons.list)
-                : const Icon(Icons.map),
+            icon: viewMode.value == ViewMode.map ? const Icon(Icons.map) : const Icon(Icons.list),
           ),
         ],
       ),
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset('assets/images/tec_map_sample.png'),
+          InteractiveViewer(
+            boundaryMargin: const EdgeInsets.all(20.0),
+            minScale: 0.5,
+            maxScale: 4.0,
+            child: Image.asset('assets/images/tec_map_sample.png', fit: BoxFit.cover),
+          ),
           DraggableScrollableSheet(
-            initialChildSize: _sheetPosition,
+            initialChildSize: 0.2,
             controller: draggableController,
             snap: true,
-            expand: false,
+            // expand: false,
             minChildSize: 0.2,
             maxChildSize: 1.0,
             snapSizes: [0.2, 0.5, 1.0],
             builder: (BuildContext context, ScrollController scrollController) {
-              return ColoredBox(
-                color: Theme.of(context).colorScheme.primary,
-                child: Column(
-                  children: <Widget>[
-                    GestureDetector(
-                      onVerticalDragStart: (DragStartDetails details) {
-                        isScrollingInside.value = false;
-                        print('isScrollingInside: ${isScrollingInside.value}');
-                      },
-                      onVerticalDragEnd: (DragEndDetails details) {
-                        isScrollingInside.value = false;
-                        print('isScrollingInside: ${isScrollingInside.value}');
-                      },
-                      onVerticalDragUpdate: (DragUpdateDetails details) {
-                        isScrollingInside.value = false;
-                        print('isScrollingInside: ${isScrollingInside.value}');
-                      },
-                      onTap: () {
-                        isScrollingInside.value = !isScrollingInside.value;
-                        scrollControllerContainer.value = isScrollingInside.value ? null : scrollController;
-                        print('isScrollingInside: ${isScrollingInside.value}');
-                      },
-
-                      child: Column(
-                        children: [
-                          Text("Tapme: ${isScrollingInside.value}", style: TextStyle(color: Colors.white)),
-                          Container(
-                            width: double.infinity,
-                            color: Theme.of(context).colorScheme.onSurface,
-                            child: Align(
-                              alignment: Alignment.topCenter,
-                              child: Container(
-                                margin: const EdgeInsets.symmetric(vertical: 8.0),
-                                width: 32.0,
-                                height: 4.0,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                  borderRadius: BorderRadius.circular(8.0),
+              return Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: isFullScreen.value == false
+                      ? const BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))
+                      : BorderRadius.zero,
+                ),
+                child: CustomScrollView(
+                  controller: scrollController,
+                  physics: isFullScreen.value == true
+                      ? const NeverScrollableScrollPhysics()
+                      : const AlwaysScrollableScrollPhysics(),
+                  slivers: [
+                    // Draggable Handle
+                    isFullScreen.value == false
+                        ? SliverToBoxAdapter(
+                            child: Container(
+                              width: double.infinity,
+                              height: 32,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.surface,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(20.0),
+                                  topRight: Radius.circular(20.0),
+                                ),
+                              ),
+                              child: Center(
+                                child: Container(
+                                  width: 48.0,
+                                  height: 4.0,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
                                 ),
                               ),
                             ),
+                          )
+                        : SliverToBoxAdapter(child: SizedBox.shrink()),
+                    SliverToBoxAdapter(child: SizedBox(height: 8)),
+                    // Filter Section
+                    const SliverToBoxAdapter(child: WrappedFilter()),
+                    SliverToBoxAdapter(child: SizedBox(height: 8)),
+                    // List Content with SliverLayoutBuilder
+                    SliverLayoutBuilder(
+                      builder: (context, constraints) {
+                        // Use remaining paint extent for available height
+                        double availableHeight = constraints.remainingPaintExtent;
+
+                        return SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: availableHeight > 100 ? availableHeight : 300, // Fallback height
+                            child: draggableController.size > 0.2
+                                ? ListView.builder(
+                                    controller: listController,
+                                    itemCount: 25,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return BookCard();
+                                    },
+                                  )
+                                : SizedBox.shrink(),
                           ),
-                        ],
-                      ),
-                    ),
-                    WrappedFilter(),
-                    Flexible(
-                      child: SingleChildScrollView(
-                        controller: isScrollingInside.value ? null : scrollController,
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        child: Column(
-                          children: [
-                            ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: 25,
-                              itemBuilder: (BuildContext context, int index) {
-                                return ListTile(
-                                  title: Text(
-                                    'Item $index',
-                                    style: TextStyle(color: Theme.of(context).colorScheme.surface),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
+                        );
+                      },
                     ),
                   ],
                 ),
               );
             },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class BookCard extends StatelessWidget {
+  const BookCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(12.0),
+        border: Border.all(color: Theme.of(context).colorScheme.outline.withOpacity(0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12.0)),
+            child: Image.asset(
+              'assets/images/tec_map_sample.png',
+              height: 160,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('L3, Room L3-Boardroom', style: Theme.of(context).textTheme.titleMedium),
+                const SizedBox(height: 4),
+                Text(
+                  'The Factory, 341m distance',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                ),
+                const SizedBox(height: 4),
+                Text('14 Seats', style: Theme.of(context).textTheme.bodyMedium),
+                const SizedBox(height: 8),
+                Text(
+                  'HKD 0.00 / hour',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.primary),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -187,90 +283,37 @@ class WrappedFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Wrap(
-        spacing: 8.0,
-        runSpacing: 8.0,
+        spacing: 4.0,
+        // runSpacing: 8.0,
         children: [
-          GestureDetector(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.filter_list, size: 18.0, color: Theme.of(context).colorScheme.surface),
-                  const SizedBox(width: 4.0),
-                  Text('Filter', style: TextStyle(color: Theme.of(context).colorScheme.surface)),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.calendar_today, size: 18.0, color: Theme.of(context).colorScheme.surface),
-                const SizedBox(width: 4.0),
-                Text('Today', style: TextStyle(color: Theme.of(context).colorScheme.surface)),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.access_time, size: 18.0, color: Theme.of(context).colorScheme.surface),
-                const SizedBox(width: 4.0),
-                Text('06:15 PM - 06:45 PM', style: TextStyle(color: Theme.of(context).colorScheme.surface)),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.people, size: 18.0, color: Theme.of(context).colorScheme.surface),
-                const SizedBox(width: 4.0),
-                Text('4 Seats', style: TextStyle(color: Theme.of(context).colorScheme.surface)),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.people, size: 18.0, color: Theme.of(context).colorScheme.surface),
-                const SizedBox(width: 4.0),
-                Text('4 Seats', style: TextStyle(color: Theme.of(context).colorScheme.surface)),
-              ],
-            ),
-          ),
+          FilterChip(key: Key('filter_chip_0'), label: 'Filter', icon: Icons.people),
+          FilterChip(key: Key('filter_chip_1'), label: 'Today', icon: Icons.access_time),
+          FilterChip(key: Key('filter_chip_2'), label: '06:15 PM - 06:45 PM', icon: Icons.people),
+          FilterChip(key: Key('filter_chip_3'), label: '4 Seats', icon: Icons.calendar_today),
+          FilterChip(key: Key('filter_chip_4'), label: 'All centres in the City', icon: Icons.filter_list),
         ],
       ),
+    );
+  }
+}
+
+class FilterChip extends StatelessWidget {
+  const FilterChip({super.key, required this.label, required this.icon});
+
+  final String label;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Chip(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      avatar: Icon(icon, size: 18.0, color: Theme.of(context).colorScheme.surface),
+      label: Text(label, style: Theme.of(context).textTheme.labelMedium),
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      labelPadding: const EdgeInsets.only(left: 2.0, right: 4.0),
     );
   }
 }
