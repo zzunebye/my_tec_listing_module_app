@@ -202,7 +202,7 @@ class _BookingListScreenState extends State<BookingListScreen> {
                     SliverToBoxAdapter(child: SizedBox(height: 8)),
                     // Filter Section
                     if (searchMode.value != SearchMode.eventSpace)
-                      SliverToBoxAdapter(child: Column(children: [const WrappedFilters(), SizedBox(height: 8)])),
+                      SliverToBoxAdapter(child: Column(children: [WrappedFilters(searchMode: searchMode.value), SizedBox(height: 8)])),
                     // List Content with SliverLayoutBuilder
                     SliverLayoutBuilder(
                       builder: (context, constraints) {
