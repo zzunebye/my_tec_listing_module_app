@@ -11,15 +11,15 @@ CentreDto _$CentreDtoFromJson(Map<String, dynamic> json) => CentreDto(
   amenities: Map<String, bool>.from(json['amenities'] as Map),
   country: json['country'] as String,
   centreCodesForVoCwCheckout:
-      (json['centreCodesForVoCwCheckout'] as List<dynamic>)
-          .map((e) => e as String)
+      (json['centreCodesForVoCwCheckout'] as List<dynamic>?)
+          ?.map((e) => e as String)
           .toList(),
   centreHighlights: Map<String, String?>.from(json['centreHighlights'] as Map),
   cityId: json['cityId'] as String,
-  citySlug: json['citySlug'] as String,
+  citySlug: json['citySlug'] as String?,
   cityCode: json['cityCode'] as String,
-  displayEmail: json['displayEmail'] as String,
-  displayPhone: json['displayPhone'] as String,
+  displayEmail: json['displayEmail'] as String?,
+  displayPhone: json['displayPhone'] as String?,
   centreSchedule: (json['centreSchedule'] as Map<String, dynamic>).map(
     (k, e) => MapEntry(
       k,
@@ -32,23 +32,27 @@ CentreDto _$CentreDtoFromJson(Map<String, dynamic> json) => CentreDto(
     json['centreTrafficInfo'] as Map,
   ),
   displayAddress: Map<String, String?>.from(json['displayAddress'] as Map),
-  addressLevel: json['addressLevel'] as String,
-  localizedName: Map<String, String?>.from(json['localizedName'] as Map),
-  mapboxCoordinates: (json['mapboxCoordinates'] as Map<String, dynamic>).map(
-    (k, e) => MapEntry(k, (e as num).toDouble()),
+  addressLevel: json['addressLevel'] as String?,
+  localizedName: (json['localizedName'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as String?),
   ),
-  slug: json['slug'] as String,
-  netSizeSqFt: (json['netSizeSqFt'] as num).toInt(),
-  noOfFloors: (json['noOfFloors'] as num).toInt(),
-  noOfMeetingRoom: (json['noOfMeetingRoom'] as num).toInt(),
-  sequence: Map<String, String?>.from(json['sequence'] as Map),
-  status: json['status'] as String,
+  mapboxCoordinates: (json['mapboxCoordinates'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, (e as num?)?.toDouble()),
+  ),
+  slug: json['slug'] as String?,
+  netSizeSqFt: (json['netSizeSqFt'] as num?)?.toInt(),
+  noOfFloors: (json['noOfFloors'] as num?)?.toInt(),
+  noOfMeetingRoom: (json['noOfMeetingRoom'] as num?)?.toInt(),
+  sequence: (json['sequence'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, e as String?),
+  ),
+  status: json['status'] as String?,
   tecTacCodeMappingForMtCore:
-      (json['tecTacCodeMappingForMtCore'] as List<dynamic>)
-          .map((e) => e as String)
+      (json['tecTacCodeMappingForMtCore'] as List<dynamic>?)
+          ?.map((e) => e as String)
           .toList(),
-  vrTourLink: json['vrTourLink'] as String,
-  zipCode: json['zipCode'] as String,
+  vrTourLink: json['vrTourLink'] as String?,
+  zipCode: json['zipCode'] as String?,
   newCentreCodesForMtCore: (json['newCentreCodesForMtCore'] as List<dynamic>)
       .map((e) => e as String)
       .toList(),
@@ -57,13 +61,13 @@ CentreDto _$CentreDtoFromJson(Map<String, dynamic> json) => CentreDto(
           .map((e) => e as String)
           .toList(),
   languageCode: json['languageCode'] as String?,
-  chinaCoordinates: (json['chinaCoordinates'] as Map<String, dynamic>).map(
-    (k, e) => MapEntry(k, (e as num).toDouble()),
+  chinaCoordinates: (json['chinaCoordinates'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, (e as num?)?.toDouble()),
   ),
   displayAddressWithLevel: Map<String, String>.from(
     json['displayAddressWithLevel'] as Map,
   ),
-  netSizeSqM: (json['netSizeSqM'] as num).toDouble(),
+  netSizeSqM: (json['netSizeSqM'] as num?)?.toDouble(),
 );
 
 Map<String, dynamic> _$CentreDtoToJson(CentreDto instance) => <String, dynamic>{
