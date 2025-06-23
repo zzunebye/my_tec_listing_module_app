@@ -3,18 +3,21 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_tec_listing_module_app/data/dto/city_dto.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/city_list_state.dart';
+import 'package:my_tec_listing_module_app/presentation/providers/current_city_state.dart';
 
 class CitySelectionDialog extends HookConsumerWidget {
   const CitySelectionDialog({super.key, required this.onCitySaved, required this.currentCity});
 
-  final Function(String) onCitySaved;
-  final String currentCity;
+  final Function(String cityName, String cityCode) onCitySaved;
+  final CityState currentCity;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // TODO: Extract outside the widget, inject from page widget
     final cityListState = ref.watch(cityListStateProvider);
 
-    final localCurrentCity = useState<String>(currentCity);
+    final localCurrentCity = useState<String>(currentCity.cityName);
+    final localCurrentCityCode = useState<String>(currentCity.cityCode);
 
     return AlertDialog(
       title: Column(
@@ -29,15 +32,15 @@ class CitySelectionDialog extends HookConsumerWidget {
         children: [
           cityListState.when(
             // items: ['a', 'b', 'c'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-            data: (List<CityDto> data) => DropdownButtonFormField<String>(
-              value: localCurrentCity.value,
-              items: (data as List<dynamic>)
-                  .map((e) => DropdownMenuItem(value: e.name as String, child: Text(e.name ?? "")))
-                  .toList(),
+            data: (List<CityDto> cities) => DropdownButtonFormField<String>(
+              key: const Key('city-dropdown'),
+              value: currentCity.cityCode,
+              items: cities.map((city) => DropdownMenuItem(value: city.code, child: Text(city.name))).toList(),
 
               // items: ['a', 'b', 'c'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
-              onChanged: (value) {
-                localCurrentCity.value = value ?? currentCity;
+              onChanged: (String? value) {
+                localCurrentCity.value = cities.firstWhere((e) => e.code == value).name;
+                localCurrentCityCode.value = cities.firstWhere((e) => e.code == value).code;
               },
             ),
             error: (error, stackTrace) => SizedBox(),
@@ -56,7 +59,7 @@ class CitySelectionDialog extends HookConsumerWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
-                onCitySaved("Hong Kong");
+                onCitySaved("Hong Kong", "HKG");
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -70,7 +73,7 @@ class CitySelectionDialog extends HookConsumerWidget {
             FilledButton(
               onPressed: () {
                 Navigator.pop(context);
-                onCitySaved(localCurrentCity.value);
+                onCitySaved(localCurrentCity.value, localCurrentCityCode.value);
               },
               child: Text('Save', style: Theme.of(context).textTheme.bodyMedium),
             ),

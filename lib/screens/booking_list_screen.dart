@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
+import 'package:my_tec_listing_module_app/presentation/providers/booking_coworking_state.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/current_city_state.dart';
 import 'package:my_tec_listing_module_app/widgets/city_selection_dialog.dart';
+import 'package:my_tec_listing_module_app/widgets/coworking_list_view.dart';
 import 'package:my_tec_listing_module_app/widgets/room_card.dart';
 import 'package:my_tec_listing_module_app/widgets/wrapped_filters.dart';
 
@@ -93,8 +96,11 @@ class _BookingListScreenState extends State<BookingListScreen> {
                   showDialog(
                     context: context,
                     builder: (context) => CitySelectionDialog(
-                      onCitySaved: (String city) {
-                        ref.read(currentCityStateProvider.notifier).state = city;
+                      onCitySaved: (String cityName, String cityCode) {
+                        ref.read(currentCityStateProvider.notifier).state = CityState(
+                          cityName: cityName,
+                          cityCode: cityCode,
+                        );
                       },
                       currentCity: currentCity,
                     ),
@@ -105,7 +111,7 @@ class _BookingListScreenState extends State<BookingListScreen> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Text(currentCity), SizedBox(width: 8), Icon(Icons.navigation_rounded)],
+                  children: [Text(currentCity.cityName), SizedBox(width: 8), Icon(Icons.navigation_rounded)],
                 ),
               );
             },
@@ -196,14 +202,7 @@ class _BookingListScreenState extends State<BookingListScreen> {
                     SliverToBoxAdapter(child: SizedBox(height: 8)),
                     // Filter Section
                     if (searchMode.value != SearchMode.eventSpace)
-                      SliverToBoxAdapter(
-                        child: Column(
-                          children: [
-                            const WrappedFilters(),
-                            SizedBox(height: 8),
-                          ],
-                        ),
-                      ),
+                      SliverToBoxAdapter(child: Column(children: [const WrappedFilters(), SizedBox(height: 8)])),
                     // List Content with SliverLayoutBuilder
                     SliverLayoutBuilder(
                       builder: (context, constraints) {
@@ -222,10 +221,26 @@ class _BookingListScreenState extends State<BookingListScreen> {
                             );
                             break;
                           case SearchMode.coworking:
-                            content = CoworkingListView(); // 새로운 위젯
+                            content = Consumer(
+                              builder: (context, ref, child) {
+                                final bookingCoworkingState = ref.watch(bookingCoworkingStateProvider);
+                                return bookingCoworkingState.when(
+                                  data: (data) => CoworkingListView(bookingCoworkingState: data),
+                                  error: (error, stackTrace) =>
+                                      Text('Error: $error, $stackTrace', style: Theme.of(context).textTheme.bodyMedium),
+                                  loading: () => CircularProgressIndicator(),
+                                ); // 새로운 위젯
+                              },
+                            );
                             break;
                           case SearchMode.dayOffice:
-                            content = DayOfficeListView(); // 새로운 위젯
+                            content = Consumer(
+                              builder: (context, ref, child) {
+                                final bookingCoworkingState = ref.watch(bookingCoworkingStateProvider);
+                                return Placeholder();
+                                // return DayOfficeListView(bookingCoworkingState: bookingCoworkingState); // 새로운 위젯
+                              },
+                            );
                             break;
                           case SearchMode.eventSpace:
                             content = EventSpaceListView(); // 새로운 위젯
@@ -251,21 +266,20 @@ class _BookingListScreenState extends State<BookingListScreen> {
   }
 }
 
-class CoworkingListView extends StatelessWidget {
-  const CoworkingListView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
-
 class DayOfficeListView extends StatelessWidget {
-  const DayOfficeListView({super.key});
+  const DayOfficeListView({super.key, required this.bookingCoworkingState});
+
+  final List<CentreDto> bookingCoworkingState;
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return ListView.builder(
+      itemCount: bookingCoworkingState.length,
+      itemBuilder: (BuildContext context, int index) {
+        print(bookingCoworkingState[index]);
+        return RoomCard();
+      },
+    );
   }
 }
 

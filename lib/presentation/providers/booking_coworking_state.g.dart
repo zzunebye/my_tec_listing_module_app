@@ -1,30 +1,30 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'day_office_state.dart';
+part of 'booking_coworking_state.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dayOfficeListStateHash() =>
-    r'47f658da2fd41ffa1d4677ae9b7a2f400e5ae098';
+String _$bookingCoworkingStateHash() =>
+    r'488564f78f4be9c4f8d1f498f2f11a2d647eacf6';
 
-/// See also [DayOfficeListState].
-@ProviderFor(DayOfficeListState)
-final dayOfficeListStateProvider =
+/// See also [BookingCoworkingState].
+@ProviderFor(BookingCoworkingState)
+final bookingCoworkingStateProvider =
     AutoDisposeAsyncNotifierProvider<
-      DayOfficeListState,
+      BookingCoworkingState,
       List<CentreDto>
     >.internal(
-      DayOfficeListState.new,
-      name: r'dayOfficeListStateProvider',
+      BookingCoworkingState.new,
+      name: r'bookingCoworkingStateProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$dayOfficeListStateHash,
+          : _$bookingCoworkingStateHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$DayOfficeListState = AutoDisposeAsyncNotifier<List<CentreDto>>;
+typedef _$BookingCoworkingState = AutoDisposeAsyncNotifier<List<CentreDto>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
