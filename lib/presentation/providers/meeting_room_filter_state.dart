@@ -17,6 +17,8 @@ class MeetingRoomFilterState extends _$MeetingRoomFilterState {
   }
 
   void update(MeetingRoomFilter newState) => state = newState;
+
+  void reset() => state = MeetingRoomFilter.defaultSettings();
 }
 
 class MeetingRoomFilter {
@@ -27,6 +29,7 @@ class MeetingRoomFilter {
   // TODO: update to be requiredVideoConference
   final bool canVideoConference;
   final bool requiredWindow;
+  final List<String> centres;
 
   MeetingRoomFilter({
     this.capacity = 4,
@@ -35,7 +38,20 @@ class MeetingRoomFilter {
     required this.endTime,
     this.canVideoConference = false,
     this.requiredWindow = false,
+    this.centres = const [],
   });
+
+  MeetingRoomFilter.defaultSettings()
+    : this(
+        capacity: 4,
+        date: DateTime.now(),
+        startTime: DateTime.now().add(Duration(minutes: (15 - DateTime.now().minute % 15) % 15)),
+        endTime: DateTime.now()
+            .add(Duration(minutes: (15 - DateTime.now().minute % 15) % 15))
+            .add(Duration(minutes: 30)),
+        canVideoConference: false,
+        centres: [],
+      );
 
   @override
   bool operator ==(covariant MeetingRoomFilter other) {
@@ -46,7 +62,8 @@ class MeetingRoomFilter {
         other.startTime == startTime &&
         other.endTime == endTime &&
         other.canVideoConference == canVideoConference &&
-        other.requiredWindow == requiredWindow;
+        other.requiredWindow == requiredWindow &&
+        other.centres == centres;
   }
 
   @override
@@ -56,6 +73,27 @@ class MeetingRoomFilter {
         startTime.hashCode ^
         endTime.hashCode ^
         canVideoConference.hashCode ^
-        requiredWindow.hashCode;
+        requiredWindow.hashCode ^
+        centres.hashCode;
+  }
+
+  MeetingRoomFilter copyWith({
+    int? capacity,
+    DateTime? date,
+    DateTime? startTime,
+    DateTime? endTime,
+    bool? canVideoConference,
+    bool? requiredWindow,
+    List<String>? centres,
+  }) {
+    return MeetingRoomFilter(
+      capacity: capacity ?? this.capacity,
+      date: date ?? this.date,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      canVideoConference: canVideoConference ?? this.canVideoConference,
+      requiredWindow: requiredWindow ?? this.requiredWindow,
+      centres: centres ?? this.centres,
+    );
   }
 }
