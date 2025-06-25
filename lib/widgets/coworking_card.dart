@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
+import 'package:my_tec_listing_module_app/utils/date.dart';
 
 class CoworkingCard extends StatelessWidget {
-  const CoworkingCard({super.key});
+  const CoworkingCard({super.key, required this.coworkingCentre, required this.filterDay});
+
+  final CentreDto coworkingCentre;
+  final DateTime filterDay;
 
   @override
   Widget build(BuildContext context) {
+    final dayScheduleInfo = coworkingCentre.centreSchedule[getWeekdayString(filterDay.weekday).toLowerCase()];
+    final isAvailableBasedOnSchedule = (dayScheduleInfo?['start'] != null || dayScheduleInfo?['end'] != null)
+        ? true
+        : false;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       decoration: BoxDecoration(
@@ -29,12 +38,20 @@ class CoworkingCard extends StatelessWidget {
               children: [
                 Positioned.fill(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(12.0), topRight: Radius.circular(12.0)),
-                    child: Image.asset(
-                      'assets/images/tec_map_sample.png',
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(12.0),
+                      topRight: Radius.circular(12.0),
+                    ),
+                    child: ColorFiltered(
+                      colorFilter: isAvailableBasedOnSchedule
+                          ? const ColorFilter.mode(Colors.transparent, BlendMode.color)
+                          : ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.darken),
+                      child: Image.asset(
+                        'assets/images/tec_map_sample.png',
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
@@ -44,15 +61,21 @@ class CoworkingCard extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
-                      borderRadius: BorderRadius.only(
+                      color: isAvailableBasedOnSchedule
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.surface,
+                      borderRadius: const BorderRadius.only(
                         bottomLeft: Radius.circular(12.0),
                         topRight: Radius.circular(12.0),
                       ),
                     ),
                     child: Text(
-                      'WALK IN ONLY',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white),
+                      isAvailableBasedOnSchedule ? 'WALK IN ONLY' : 'CENTRE CLOSED',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: isAvailableBasedOnSchedule
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : Theme.of(context).colorScheme.onSurface,
+                      ),
                     ),
                   ),
                 ),
@@ -69,16 +92,20 @@ class CoworkingCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text('Available', style: Theme.of(context).textTheme.labelSmall),
-                        Icon(Icons.person_outline, size: 16, color: Theme.of(context).colorScheme.primary),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
+                    if (isAvailableBasedOnSchedule)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 4.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text('Available', style: Theme.of(context).textTheme.labelSmall),
+                            Icon(Icons.person_outline, size: 16, color: Theme.of(context).colorScheme.primary),
+                          ],
+                        ),
+                      ),
                     Text(
-                      '28 Stanley Street',
+                      coworkingCentre.localizedName?['en'] ?? '',
+                      // '28 Stanley Street',
                       style: Theme.of(
                         context,
                       ).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
@@ -96,21 +123,16 @@ class CoworkingCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Row(
-                      children: [
-                        Icon(Icons.coffee_outlined, size: 16),
-                        const SizedBox(width: 4),
-                        Text('Baristar Bar', style: Theme.of(context).textTheme.labelMedium),
-                      ],
-                    ),
+                    coworkingCentre.amenities['freshCoffeeByProfessionalBarista'] == true
+                        ? Row(
+                            children: [
+                              Icon(Icons.coffee_outlined, size: 16),
+                              const SizedBox(width: 4),
+                              Text('Baristar Bar', style: Theme.of(context).textTheme.labelMedium),
+                            ],
+                          )
+                        : SizedBox.shrink(),
                     // const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(Icons.location_city_outlined, size: 16),
-                        const SizedBox(width: 4),
-                        Text('City View', style: Theme.of(context).textTheme.labelMedium),
-                      ],
-                    ),
                   ],
                 ),
               ],
