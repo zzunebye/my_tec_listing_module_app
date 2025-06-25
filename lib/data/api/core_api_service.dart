@@ -4,11 +4,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../core/networks/dio_providers.dart';
 
-// import '../core/config/api_endpoints.dart';
-// import '../models/room_model.dart';
-// import '../models/centre_model.dart';
-// import '../models/city_model.dart';
-
 part 'core_api_service.g.dart';
 
 @riverpod
