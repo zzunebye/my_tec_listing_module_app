@@ -1,11 +1,8 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
-import 'package:my_tec_listing_module_app/data/dto/meeting_room_pricing_dto.dart';
 import 'package:my_tec_listing_module_app/data/dto/responses/get_cities_response_dto.dart';
-import 'package:my_tec_listing_module_app/data/dto/responses/meeting_room_response_dto.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../core/dio_client.dart';
+import '../../core/networks/dio_providers.dart';
 
 // import '../core/config/api_endpoints.dart';
 // import '../models/room_model.dart';
@@ -16,7 +13,7 @@ part 'core_api_service.g.dart';
 
 @riverpod
 CoreApiService coreApiService(Ref ref) {
-  return CoreApiService(ref.watch(dioProvider));
+  return CoreApiService(ref.watch(coreDioProvider));
 }
 
 class CoreApiEndpoints {
@@ -33,67 +30,9 @@ class CoreApiEndpoints {
 }
 
 class CoreApiService {
-  final DioClient _dioClient;
+  final CoreClient _dioClient;
 
   CoreApiService(this._dioClient);
-
-  Future<List<Map>> getAvailableRooms({
-    required DateTime startDate,
-    required DateTime endDate,
-    required String cityCode,
-  }) async {
-    final response = await _dioClient.dio.get(
-      CoreApiEndpoints.roomAvailabilities,
-      queryParameters: {
-        'startDate': startDate.toIso8601String(),
-        'endDate': endDate.toIso8601String(),
-        'cityCode': cityCode,
-      },
-    );
-
-    final List<Map> data = response.data['data'] ?? response.data;
-    return data;
-  }
-
-  Future<List<MeetingRoomPricingDto>> getRoomPricing({
-    required DateTime startDate,
-    required DateTime endDate,
-    required String cityCode,
-    bool isVcBooking = false,
-    String? profileId,
-  }) async {
-    final response = await _dioClient.dio.get(
-      CoreApiEndpoints.roomPricings,
-      queryParameters: {
-        'startDate': startDate.toIso8601String(),
-        'endDate': endDate.toIso8601String(),
-        'cityCode': cityCode,
-        'isVcBooking': isVcBooking,
-        if (profileId != null) 'profileId': profileId,
-      },
-    );
-
-    final List<MeetingRoomPricingDto> pricing = response.data['data'] ?? response.data;
-
-    return pricing;
-  }
-
-  Future<MeetingRoomResponseDto> getAllRooms({int pageSize = 10, int pageNumber = 1}) async {
-    final response = await _dioClient.dio.get(
-      CoreApiEndpoints.meetingRooms,
-      queryParameters: {'pageSize': pageSize, 'pageNumber': pageNumber},
-    );
-
-    final MeetingRoomResponseDto rooms = MeetingRoomResponseDto.fromJson(response.data['data'] ?? response.data);
-
-    return rooms;
-  }
-
-  Future<List<CentreDto>> getCentres() async {
-    final response = await _dioClient.dio.get(CoreApiEndpoints.centreGroups);
-    final List<CentreDto> data = (response.data['data'] ?? response.data).map((e) => CentreDto.fromJson(e)).toList();
-    return data;
-  }
 
   Future<GetCitiesResponseDto> getCities({int pageSize = 10, int pageNumber = 1}) async {
     final response = await _dioClient.dio.get(
