@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:my_tec_listing_module_app/presentation/providers/current_city_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'meeting_room_filter_state.g.dart';
@@ -7,16 +8,15 @@ part 'meeting_room_filter_state.g.dart';
 class MeetingRoomFilterState extends _$MeetingRoomFilterState {
   @override
   MeetingRoomFilter build() {
-    return MeetingRoomFilter(
-      capacity: 0,
-      date: DateTime.now(),
-      startTime: DateTime.now(),
-      endTime: DateTime.now(),
-      canVideoConference: false,
-    );
+    final currentCity = ref.watch(currentCityStateProvider);
+    print('currentCity: ${currentCity.cityCode}');
+    return MeetingRoomFilter.defaultSettings();
   }
 
-  void update(MeetingRoomFilter newState) => state = newState;
+  void update(MeetingRoomFilter newState) {
+    // print('update: $newState');
+    state = newState;
+  }
 
   void reset() => state = MeetingRoomFilter.defaultSettings();
 }
@@ -45,10 +45,16 @@ class MeetingRoomFilter {
     : this(
         capacity: 4,
         date: DateTime.now(),
-        startTime: DateTime.now().add(Duration(minutes: (15 - DateTime.now().minute % 15) % 15)),
-        endTime: DateTime.now()
-            .add(Duration(minutes: (15 - DateTime.now().minute % 15) % 15))
-            .add(Duration(minutes: 30)),
+        startTime: (() {
+          final now = DateTime.now();
+          final minutesToAdd = (15 - now.minute % 15) % 15;
+          return DateTime(now.year, now.month, now.day, now.hour, now.minute + minutesToAdd);
+        })(),
+        endTime: (() {
+          final now = DateTime.now();
+          final minutesToAdd = (15 - now.minute % 15) % 15;
+          return DateTime(now.year, now.month, now.day, now.hour, now.minute + minutesToAdd + 30);
+        })(),
         canVideoConference: false,
         centres: [],
       );
@@ -84,6 +90,7 @@ class MeetingRoomFilter {
     DateTime? endTime,
     bool? canVideoConference,
     bool? requiredWindow,
+    // should be a code of the centres
     List<String>? centres,
   }) {
     return MeetingRoomFilter(

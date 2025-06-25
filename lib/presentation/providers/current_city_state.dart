@@ -1,4 +1,15 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
+import 'package:my_tec_listing_module_app/presentation/providers/centre_list_state.dart';
+
+final centresUnderCurrentCityProvider = FutureProvider<List<CentreDto>>((ref) async {
+  final currentCity = ref.watch(currentCityStateProvider);
+  final centres = await ref.watch(centreListStateProvider.future);
+  print("currentCity: ${currentCity.cityCode}");
+  return centres.where((centre) => centre.cityCode == currentCity.cityCode).toList();
+});
+
+
 
 final currentCityStateProvider = StateProvider<CityState>((ref) {
   return CityState(cityCode: 'HKG', cityName: 'Hong Kong');

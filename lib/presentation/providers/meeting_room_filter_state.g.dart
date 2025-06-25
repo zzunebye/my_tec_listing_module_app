@@ -7,7 +7,7 @@ part of 'meeting_room_filter_state.dart';
 // **************************************************************************
 
 String _$meetingRoomFilterStateHash() =>
-    r'2672dc71a506b1ebe0a3395e8a02d7d1b7cb137b';
+    r'ef1564582b2d0cddb43ab004435c9b6dad940e87';
 
 /// See also [MeetingRoomFilterState].
 @ProviderFor(MeetingRoomFilterState)

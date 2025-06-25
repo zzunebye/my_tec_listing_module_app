@@ -24,15 +24,6 @@ MeetingRoomDto _$MeetingRoomDtoFromJson(Map<String, dynamic> json) =>
       isFromNewObs: json['isFromNewObs'] as bool,
       isClosed: json['isClosed'] as bool,
       isInternal: json['isInternal'] as bool,
-      terms: (json['terms'] as List<dynamic>)
-          .map(
-            (e) => _$recordConvert(
-              e,
-              ($jsonValue) =>
-                  ($jsonValue[r'$1'] as String, $jsonValue[r'$2'] as String),
-            ),
-          )
-          .toList(),
     );
 
 Map<String, dynamic> _$MeetingRoomDtoToJson(MeetingRoomDto instance) =>
@@ -49,10 +40,4 @@ Map<String, dynamic> _$MeetingRoomDtoToJson(MeetingRoomDto instance) =>
       'isFromNewObs': instance.isFromNewObs,
       'isClosed': instance.isClosed,
       'isInternal': instance.isInternal,
-      'terms': instance.terms
-          .map((e) => <String, dynamic>{r'$1': e.$1, r'$2': e.$2})
-          .toList(),
     };
-
-$Rec _$recordConvert<$Rec>(Object? value, $Rec Function(Map) convert) =>
-    convert(value as Map<String, dynamic>);

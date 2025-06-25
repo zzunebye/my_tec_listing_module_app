@@ -7,7 +7,7 @@ part of 'day_office_state.dart';
 // **************************************************************************
 
 String _$dayOfficeListStateHash() =>
-    r'47f658da2fd41ffa1d4677ae9b7a2f400e5ae098';
+    r'9fbc1facf2e436f790eac769adf4a6d02980304d';
 
 /// See also [DayOfficeListState].
 @ProviderFor(DayOfficeListState)

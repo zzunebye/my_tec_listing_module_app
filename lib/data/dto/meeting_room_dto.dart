@@ -17,7 +17,7 @@ class MeetingRoomDto {
   final bool isFromNewObs;
   final bool isClosed;
   final bool isInternal;
-  final List<(String languageCode, String value)> terms;
+  // final List<(String languageCode, String value)> terms;
 
   MeetingRoomDto({
     required this.centreCode,
@@ -32,7 +32,7 @@ class MeetingRoomDto {
     required this.isFromNewObs,
     required this.isClosed,
     required this.isInternal,
-    required this.terms,
+    // required this.terms,
   });
 
   factory MeetingRoomDto.fromJson(Map<String, dynamic> json) => _$MeetingRoomDtoFromJson(json);
