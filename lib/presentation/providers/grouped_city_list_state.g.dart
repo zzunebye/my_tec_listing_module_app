@@ -1,30 +1,33 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'search_coworking_state.dart';
+part of 'grouped_city_list_state.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$searchCoworkingStateHash() =>
-    r'ecfc44fc827c5d70818c07d1b0570f4f4155d663';
+String _$groupedCityListStateHash() =>
+    r'7abfa5152630759d11eea63012d888d72c436c33';
 
-/// See also [SearchCoworkingState].
-@ProviderFor(SearchCoworkingState)
-final searchCoworkingStateProvider =
+/// Provider that groups cities by region for UI consumption
+///
+/// Copied from [GroupedCityListState].
+@ProviderFor(GroupedCityListState)
+final groupedCityListStateProvider =
     AutoDisposeAsyncNotifierProvider<
-      SearchCoworkingState,
-      List<CentreDto>
+      GroupedCityListState,
+      List<RegionWithCitiesEntity>
     >.internal(
-      SearchCoworkingState.new,
-      name: r'searchCoworkingStateProvider',
+      GroupedCityListState.new,
+      name: r'groupedCityListStateProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$searchCoworkingStateHash,
+          : _$groupedCityListStateHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$SearchCoworkingState = AutoDisposeAsyncNotifier<List<CentreDto>>;
+typedef _$GroupedCityListState =
+    AutoDisposeAsyncNotifier<List<RegionWithCitiesEntity>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

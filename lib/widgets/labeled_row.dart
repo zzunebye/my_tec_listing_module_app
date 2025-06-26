@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:my_tec_listing_module_app/app_theme.dart';
 
 class LabeledRow extends StatelessWidget {
   const LabeledRow({
     super.key,
     required this.title,
     required this.child,
-    this.padding = const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+    this.padding = const EdgeInsets.symmetric(vertical: AppSpacing.xSmall, horizontal: AppSpacing.medium),
   });
 
   final String title;
@@ -20,8 +21,8 @@ class LabeledRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Flexible(flex: 1, child: Text(title, style: Theme.of(context).textTheme.titleMedium)),
-          const SizedBox(width: 8.0),
+          Flexible(flex: 1, child: Text(title, style: Theme.of(context).textTheme.labelLarge)),
+          const SizedBox(width: AppSpacing.xSmall),
           Flexible(flex: 2, child: child),
         ],
       ),

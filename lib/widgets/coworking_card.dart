@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_tec_listing_module_app/app_theme.dart';
 import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
 import 'package:my_tec_listing_module_app/utils/date.dart';
 
@@ -15,10 +16,10 @@ class CoworkingCard extends StatelessWidget {
         ? true
         : false;
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.medium, vertical: AppSpacing.xSmall),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: BorderRadius.circular(AppBorderRadius.medium),
         border: Border.all(color: Theme.of(context).colorScheme.outline.withOpacity(0.2)),
       ),
       child: Column(
@@ -39,8 +40,8 @@ class CoworkingCard extends StatelessWidget {
                 Positioned.fill(
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(12.0),
-                      topRight: Radius.circular(12.0),
+                      topLeft: Radius.circular(AppBorderRadius.medium),
+                      topRight: Radius.circular(AppBorderRadius.medium),
                     ),
                     child: ColorFiltered(
                       colorFilter: isAvailableBasedOnSchedule
@@ -59,7 +60,7 @@ class CoworkingCard extends StatelessWidget {
                   top: 0,
                   right: 0,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xSmall, vertical: AppSpacing.xxSmall),
                     decoration: BoxDecoration(
                       color: isAvailableBasedOnSchedule
                           ? Theme.of(context).colorScheme.primary
@@ -83,7 +84,7 @@ class CoworkingCard extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(AppSpacing.xSmall),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -94,7 +95,7 @@ class CoworkingCard extends StatelessWidget {
                   children: [
                     if (isAvailableBasedOnSchedule)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 4.0),
+                        padding: const EdgeInsets.only(bottom: AppSpacing.xxSmall),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [

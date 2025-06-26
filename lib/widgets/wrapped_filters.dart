@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:my_tec_listing_module_app/app_theme.dart';
 import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/meeting_room_filter_state.dart';
 import 'package:my_tec_listing_module_app/screens/booking_list_screen.dart';
 import 'package:my_tec_listing_module_app/utils/date.dart';
-import 'package:my_tec_listing_module_app/widgets/filter_bottom_sheet.dart';
 
 class WrappedFilters extends HookWidget {
   const WrappedFilters({
@@ -12,80 +12,59 @@ class WrappedFilters extends HookWidget {
     this.searchMode = SearchMode.meetingRoom,
     required this.filterState,
     required this.centresInCurrentCity,
-    required this.onResetFilter,
-    required this.onApplyFilter,
+    required this.onFilterTapped,
   });
 
   final SearchMode searchMode;
   final MeetingRoomFilter filterState;
   final List<CentreDto> centresInCurrentCity;
-  final void Function(MeetingRoomFilter) onResetFilter;
-  final void Function(MeetingRoomFilter) onApplyFilter;
-
-  void openFilterDialog(BuildContext context, MeetingRoomFilter filterState) {
-    showModalBottomSheet(
-      isScrollControlled: true,
-      enableDrag: true,
-      useRootNavigator: true,
-      context: context,
-      builder: (context) => SafeArea(
-        child: FilterBottomSheet(
-          centres: centresInCurrentCity,
-          filterState: filterState,
-          searchMode: searchMode,
-          onApply: (filterState) => onApplyFilter(filterState),
-          onReset: (filterState) => onResetFilter(filterState),
-        ),
-      ),
-    );
-  }
+  final void Function() onFilterTapped;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.medium),
       child: Wrap(
         alignment: WrapAlignment.start,
         spacing: 4.0,
         children: [
           FilterChip(
-            elevation: 1,
-            shadowColor: Colors.grey.shade200,
+            shadowColor: Theme.of(context).colorScheme.outline,
             visualDensity: VisualDensity.compact,
-            avatar: Icon(Icons.filter_list, size: 18.0, color: Theme.of(context).colorScheme.onSurface),
+            avatar: Icon(Icons.filter_list_outlined),
             key: Key('filter_chip_0'),
-            label: Text('Filter', style: TextStyle(fontWeight: FontWeight.w600)),
-            onSelected: (selected) => openFilterDialog(context, filterState),
+            label: Text('Filter'),
+            onSelected: (selected) => onFilterTapped(),
           ),
           FilterChip(
             visualDensity: VisualDensity.compact,
-            avatar: Icon(Icons.today, size: 18.0, color: Theme.of(context).colorScheme.onSurface),
+            avatar: Icon(Icons.today_outlined),
             key: Key('filter_chip_1'),
             label: Text(formatDateTimeToDateString(filterState.date)),
-            onSelected: (selected) => openFilterDialog(context, filterState),
+            onSelected: (selected) => onFilterTapped(),
           ),
           if (searchMode == SearchMode.meetingRoom)
             FilterChip(
               visualDensity: VisualDensity.compact,
-              avatar: Icon(Icons.access_time, size: 18.0, color: Theme.of(context).colorScheme.onSurface),
+              avatar: Icon(Icons.access_time_outlined),
               key: Key('filter_chip_2'),
               label: Text(
-                '${filterState.startTime.hour}:${filterState.startTime.minute.toString().padLeft(2, '0')} ${filterState.startTime.hour < 12 ? 'AM' : 'PM'} - ${filterState.endTime.hour}:${filterState.endTime.minute.toString().padLeft(2, '0')} ${filterState.endTime.hour < 12 ? 'AM' : 'PM'}',
+                '${formatDateTimeToTimeString(filterState.startTime)} - ${formatDateTimeToTimeString(filterState.endTime)}',
               ),
-              onSelected: (selected) => openFilterDialog(context, filterState),
+              onSelected: (selected) => onFilterTapped(),
             ),
           if (searchMode == SearchMode.meetingRoom || searchMode == SearchMode.dayOffice)
             FilterChip(
               visualDensity: VisualDensity.compact,
-              avatar: Icon(Icons.chair, size: 18.0, color: Theme.of(context).colorScheme.onSurface),
+              avatar: Icon(Icons.people_outline_outlined),
               key: Key('filter_chip_3'),
               label: Text('${filterState.capacity} Seats'),
-              onSelected: (selected) => openFilterDialog(context, filterState),
+              onSelected: (selected) => onFilterTapped(),
             ),
           FilterChip(
             visualDensity: VisualDensity.compact,
-            avatar: Icon(Icons.location_on_outlined, size: 18.0, color: Theme.of(context).colorScheme.onSurface),
+            avatar: Icon(Icons.location_city_outlined),
             key: Key('filter_chip_4'),
             label: Text(() {
               final selectedItemCount = filterState.centres.length;
@@ -94,7 +73,7 @@ class WrappedFilters extends HookWidget {
                   ? 'All centres in the City'
                   : '$selectedItemCount centres selected';
             }()),
-            onSelected: (selected) => openFilterDialog(context, filterState),
+            onSelected: (selected) => onFilterTapped(),
           ),
         ],
       ),

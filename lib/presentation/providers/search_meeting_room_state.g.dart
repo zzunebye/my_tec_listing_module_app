@@ -7,14 +7,14 @@ part of 'search_meeting_room_state.dart';
 // **************************************************************************
 
 String _$searchMeetingRoomStateHash() =>
-    r'5e1b7cc56ced74fc271ecf7f89bb857e6adb45c5';
+    r'43a3ccfe80a888837899c2d39038813a69af185e';
 
 /// See also [SearchMeetingRoomState].
 @ProviderFor(SearchMeetingRoomState)
 final searchMeetingRoomStateProvider =
     AutoDisposeAsyncNotifierProvider<
       SearchMeetingRoomState,
-      SearchMeetingRoomStateEntity
+      List<GroupedMeetingRoomEntity>
     >.internal(
       SearchMeetingRoomState.new,
       name: r'searchMeetingRoomStateProvider',
@@ -26,6 +26,6 @@ final searchMeetingRoomStateProvider =
     );
 
 typedef _$SearchMeetingRoomState =
-    AutoDisposeAsyncNotifier<SearchMeetingRoomStateEntity>;
+    AutoDisposeAsyncNotifier<List<GroupedMeetingRoomEntity>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

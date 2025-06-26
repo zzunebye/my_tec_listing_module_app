@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_tec_listing_module_app/app_theme.dart';
 import 'package:my_tec_listing_module_app/domain/repositories/meeting_room_repository.dart';
 
 class MeetingRoomDetailScreen extends StatelessWidget {
@@ -7,9 +8,9 @@ class MeetingRoomDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Booking Room Detail'),),
+      appBar: AppBar(title: const Text('Booking Room Detail')),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.medium),
         child: ListView(
           children: [
             Image.network(entity.photoUrls?.firstOrNull ?? ''),
@@ -49,10 +50,9 @@ class MeetingRoomDetailScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text('${row['label']}:', style: const TextStyle(fontWeight: FontWeight.w500)),
-                                if (row['expanded'] == true)
-                                  Expanded(child: Text(row['value'] as String, textAlign: TextAlign.right))
-                                else
-                                  Text(row['value'] as String),
+                                row['expanded'] == true
+                                    ? Expanded(child: Text(row['value'] as String, textAlign: TextAlign.right))
+                                    : Text(row['value'] as String),
                               ],
                             ),
                           ),
@@ -124,21 +124,26 @@ class MeetingRoomDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             const Text('Amenities:'),
-            if (entity.amenities.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0, top: 4.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: entity.amenities.map((a) => Text('- $a')).toList(),
-                ),
-              )
-            else
-              const Padding(padding: EdgeInsets.only(left: 8.0, top: 4.0), child: Text('No amenities listed')),
+            entity.amenities.isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.only(left: AppSpacing.xSmall, top: AppSpacing.xxSmall),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: entity.amenities.map((a) => Text('- $a')).toList(),
+                    ),
+                  )
+                : const Padding(
+                    padding: EdgeInsets.only(left: AppSpacing.xSmall, top: AppSpacing.xxSmall),
+                    child: Text('No amenities listed'),
+                  ),
             if (entity.photoUrls != null && entity.photoUrls!.isNotEmpty)
-              Padding(padding: const EdgeInsets.only(top: 16.0), child: Text('Photo URLs:')),
+              Padding(
+                padding: const EdgeInsets.only(top: AppSpacing.medium),
+                child: Text('Photo URLs:'),
+              ),
             if (entity.photoUrls != null && entity.photoUrls!.isNotEmpty)
               Padding(
-                padding: const EdgeInsets.only(left: 8.0, top: 4.0),
+                padding: const EdgeInsets.only(left: AppSpacing.xSmall, top: AppSpacing.xxSmall),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: entity.photoUrls!

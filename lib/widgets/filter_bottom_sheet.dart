@@ -1,9 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:my_tec_listing_module_app/app.dart';
+import 'package:my_tec_listing_module_app/app_theme.dart';
 import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
+import 'package:my_tec_listing_module_app/presentation/providers/current_city_state.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/meeting_room_filter_state.dart';
 import 'package:my_tec_listing_module_app/screens/booking_list_screen.dart';
+import 'package:my_tec_listing_module_app/utils/date.dart';
+import 'package:my_tec_listing_module_app/widgets/custom_platform_picker.dart';
+import 'package:my_tec_listing_module_app/widgets/custom_platform_time_picker.dart';
 import 'package:my_tec_listing_module_app/widgets/labeled_row.dart';
 
 class FilterBottomSheet extends HookWidget {
@@ -14,6 +20,7 @@ class FilterBottomSheet extends HookWidget {
     required this.onApply,
     required this.onReset,
     required this.centres,
+    required this.currentCity,
     this.selectableDateRangeOffset = 365,
   });
 
@@ -25,6 +32,7 @@ class FilterBottomSheet extends HookWidget {
   final MeetingRoomFilter filterState;
   final int selectableDateRangeOffset;
   final List<CentreDto> centres;
+  final CityState currentCity;
 
   @override
   Widget build(BuildContext context) {
@@ -33,74 +41,64 @@ class FilterBottomSheet extends HookWidget {
     final filterTargetStartTime = useMemoized(() {
       final date = localFilterState.value.date;
       final startTime = localFilterState.value.startTime;
-      return DateTime(
-        date.year,
-        date.month,
-        date.day,
-        startTime.hour,
-        startTime.minute,
-      );
+      return DateTime(date.year, date.month, date.day, startTime.hour, startTime.minute);
     }, [localFilterState.value]);
 
     final filterTargetEndTime = useMemoized(() {
       final date = localFilterState.value.date;
       final endTime = localFilterState.value.endTime;
-      return DateTime(
-        date.year,
-        date.month,
-        date.day,
-        endTime.hour,
-        endTime.minute,
-      );
+      return DateTime(date.year, date.month, date.day, endTime.hour, endTime.minute);
     }, [localFilterState.value]);
 
     return Form(
-      // onChanged: () {
-      //   localFilterState.value = filterState;
-      // },
       key: formKeyRef.value,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton(
-                onPressed: () {
-                  onReset(filterState);
-                  localFilterState.value = MeetingRoomFilter.defaultSettings();
-                },
-                child: Text('Reset'),
-              ),
-              Expanded(child: SizedBox.shrink()),
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: Icon(Icons.close),
-              ),
-            ],
-          ),
-          Divider(color: Theme.of(context).colorScheme.onSurface, thickness: 1.0),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.only(left: AppSpacing.xSmall, right: AppSpacing.xSmall, top: 0.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    onReset(filterState);
+                    localFilterState.value = MeetingRoomFilter.defaultSettings();
+                  },
+                  child: Text(
+                    'Reset',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.subtitle),
+                  ),
+                ),
+                Expanded(child: SizedBox.shrink()),
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  icon: Icon(Icons.close_outlined, color: AppColors.subtitle),
+                ),
+              ],
+            ),
+          ),
+          Divider(color: Theme.of(context).colorScheme.outline, thickness: 1.0, height: 0.0),
+          SizedBox(height: AppSpacing.xSmall),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xSmall),
             child: Column(
               children: [
                 LabeledRow(
                   title: 'Date',
                   child: TextFormField(
+                    style: Theme.of(context).textTheme.labelLarge,
                     controller: TextEditingController(text: localFilterState.value.date.toString().split(' ')[0]),
                     readOnly: true,
-                    decoration: InputDecoration(
-                      suffixIcon: Icon(Icons.calendar_today, color: Colors.grey[600]),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
-                    ),
+                    decoration: InputDecoration(suffixIcon: Icon(Icons.calendar_today_outlined)),
                     onTap: () async {
                       final DateTime? picked = await showDatePicker(
                         context: context,
-                        initialDate: DateTime.now(),
+                        initialDate: localFilterState.value.date,
                         firstDate: DateTime.now(),
                         lastDate: DateTime.now().add(Duration(days: selectableDateRangeOffset)),
                       );
@@ -114,8 +112,10 @@ class FilterBottomSheet extends HookWidget {
                   LabeledRow(
                     title: 'Start Time',
                     child: TextFormField(
+                      style: Theme.of(context).textTheme.labelLarge,
+
                       controller: TextEditingController(
-                        text: convertDateTimeToTimeString(localFilterState.value.startTime),
+                        text: formatDateTimeToTimeString(localFilterState.value.startTime),
                       ),
                       validator: (String? value) {
                         if (value == null || value.isEmpty) return 'Start Time is required';
@@ -129,9 +129,8 @@ class FilterBottomSheet extends HookWidget {
                       },
                       readOnly: true,
                       decoration: InputDecoration(
-                        hintText: 'Select Start Time',
-                        suffixIcon: Icon(Icons.access_time, color: Colors.grey[600]),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                        suffixIcon: Icon(Icons.access_time_outlined),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppBorderRadius.small)),
                         errorMaxLines: 2,
                       ),
                       onTap: () async {
@@ -140,6 +139,7 @@ class FilterBottomSheet extends HookWidget {
                           builder: (BuildContext context) {
                             return SafeArea(
                               child: CustomPlatformTimePicker(
+                                label: 'Select Start Time',
                                 initialValue: localFilterState.value.startTime,
                                 onSaved: (DateTime value) {
                                   localFilterState.value = localFilterState.value.copyWith(startTime: value);
@@ -158,8 +158,9 @@ class FilterBottomSheet extends HookWidget {
                   LabeledRow(
                     title: 'End Time',
                     child: TextFormField(
+                      style: Theme.of(context).textTheme.labelLarge,
                       controller: TextEditingController(
-                        text: convertDateTimeToTimeString(localFilterState.value.endTime),
+                        text: formatDateTimeToTimeString(localFilterState.value.endTime),
                       ),
                       readOnly: true,
                       validator: (String? value) {
@@ -171,8 +172,8 @@ class FilterBottomSheet extends HookWidget {
                       },
                       decoration: InputDecoration(
                         hintText: 'Select End Time',
-                        suffixIcon: Icon(Icons.access_time, color: Colors.grey[600]),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                        suffixIcon: Icon(Icons.access_time_outlined),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppBorderRadius.small)),
                       ),
                       onTap: () async {
                         final DateTime? selectedTime = await showCupertinoModalPopup<DateTime>(
@@ -180,6 +181,7 @@ class FilterBottomSheet extends HookWidget {
                           builder: (BuildContext context) {
                             return SafeArea(
                               child: CustomPlatformTimePicker(
+                                label: 'Select End Time',
                                 initialValue: localFilterState.value.endTime,
                                 onSaved: (DateTime value) {
                                   localFilterState.value = localFilterState.value.copyWith(endTime: value);
@@ -198,14 +200,14 @@ class FilterBottomSheet extends HookWidget {
                   LabeledRow(
                     title: 'Capacity',
                     child: TextFormField(
-                      // initialValue: localFilterState.value.capacity.toString(),
+                      style: Theme.of(context).textTheme.labelLarge,
                       controller: TextEditingController(text: (localFilterState.value.capacity).toString()),
                       keyboardType: TextInputType.number,
                       readOnly: true,
                       decoration: InputDecoration(
                         hintText: 'Select Capacity',
-                        suffixIcon: Icon(Icons.arrow_drop_down, color: Colors.grey[600]),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                        suffixIcon: Icon(Icons.arrow_drop_down_outlined),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppBorderRadius.small)),
                       ),
                       onTap: () async {
                         final int? selectedCapacity = await showCupertinoModalPopup<int>(
@@ -213,6 +215,7 @@ class FilterBottomSheet extends HookWidget {
                           builder: (BuildContext context) {
                             return SafeArea(
                               child: CustomPlatformPicker(
+                                label: 'Select Capacity',
                                 initialValue: localFilterState.value.capacity,
                                 onSaved: (int value) {
                                   localFilterState.value = localFilterState.value.copyWith(capacity: value);
@@ -243,27 +246,54 @@ class FilterBottomSheet extends HookWidget {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.xSmall,
+                                  vertical: AppSpacing.xSmall,
+                                ),
                                 title: Text('Select Centres'),
                                 content: StatefulBuilder(
                                   builder: (BuildContext context, StateSetter setState) {
                                     return SingleChildScrollView(
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        children: centres.map((CentreDto centre) {
-                                          return CheckboxListTile(
-                                            title: Text(centre.localizedName?['en'] ?? ''),
-                                            value: tempSelectedCentres.contains(centre.localizedName?['en'] ?? ''),
+                                        children: [
+                                          CheckboxListTile(
+                                            title: Text(
+                                              'All Centres in ${currentCity.cityName}',
+                                              style: TextStyle(fontWeight: FontWeight.w500),
+                                            ),
+                                            value: tempSelectedCentres.length == centres.length,
+                                            visualDensity: VisualDensity.compact,
                                             onChanged: (bool? checked) {
                                               setState(() {
                                                 if (checked ?? false) {
-                                                  tempSelectedCentres.add(centre.localizedName?['en'] ?? '');
+                                                  tempSelectedCentres = centres
+                                                      .map((centre) => centre.localizedName?['en'] ?? '')
+                                                      .toList();
                                                 } else {
-                                                  tempSelectedCentres.remove(centre.localizedName?['en'] ?? '');
+                                                  tempSelectedCentres.clear();
                                                 }
                                               });
                                             },
-                                          );
-                                        }).toList(),
+                                          ),
+                                          Divider(height: 1),
+                                          ...centres.map((CentreDto centre) {
+                                            return CheckboxListTile(
+                                              title: Text(centre.localizedName?['en'] ?? ''),
+                                              value: tempSelectedCentres.contains(centre.localizedName?['en'] ?? ''),
+                                              visualDensity: VisualDensity.compact,
+                                              onChanged: (bool? checked) {
+                                                setState(() {
+                                                  if (checked ?? false) {
+                                                    tempSelectedCentres.add(centre.localizedName?['en'] ?? '');
+                                                  } else {
+                                                    tempSelectedCentres.remove(centre.localizedName?['en'] ?? '');
+                                                  }
+                                                });
+                                              },
+                                            );
+                                          }).toList(),
+                                        ],
                                       ),
                                     );
                                   },
@@ -292,8 +322,8 @@ class FilterBottomSheet extends HookWidget {
                         },
                         child: InputDecorator(
                           decoration: InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
-                            suffixIcon: Icon(Icons.arrow_drop_down),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppBorderRadius.small)),
+                            suffixIcon: Icon(Icons.arrow_drop_down_outlined),
                           ),
                           child: Text(
                             () {
@@ -347,7 +377,6 @@ class FilterBottomSheet extends HookWidget {
                         return Switch(
                           value: state.value ?? false,
                           onChanged: (bool value) {
-                            // localFilterState.value = localFilterState.value.copyWith(canVideoConference: value);
                             state.didChange(value);
                           },
                         );
@@ -356,7 +385,7 @@ class FilterBottomSheet extends HookWidget {
                     ),
                   ),
 
-                SizedBox(height: 16.0),
+                SizedBox(height: AppSpacing.medium),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(double.infinity, 48.0),
@@ -393,169 +422,6 @@ class FilterBottomSheet extends HookWidget {
           ),
         ],
       ),
-    );
-  }
-
-  String convertDateTimeToTimeString(DateTime dateTime) {
-    return '${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')} ${dateTime.hour < 12 ? 'AM' : 'PM'}';
-  }
-}
-
-class CustomPlatformTimePicker extends StatelessWidget {
-  const CustomPlatformTimePicker({
-    super.key,
-    this.label = 'Select Time',
-    required this.onSaved,
-    required this.initialValue,
-  });
-
-  final String label;
-  final void Function(DateTime) onSaved;
-  final DateTime initialValue;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 300.0,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16.0)),
-      ),
-      child: FormField(
-        onSaved: (DateTime? value) {
-          if (value != null) {
-            onSaved(value);
-          }
-        },
-        builder: (FormFieldState<DateTime> state) {
-          return Column(
-            children: [
-              TECFormFieldHeader(),
-              Expanded(
-                child: CupertinoDatePicker(
-                  mode: CupertinoDatePickerMode.time,
-                  initialDateTime: initialValue,
-                  minuteInterval: 15,
-                  itemExtent: 32.0,
-                  backgroundColor: Theme.of(context).colorScheme.surface,
-
-                  onDateTimeChanged: (DateTime value) {
-                    state.didChange(value);
-                  },
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  state.save();
-                  Navigator.of(context).pop();
-                },
-                child: Text('Save'),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
-class UnifiedFormFieldModalLayout extends StatelessWidget {
-  const UnifiedFormFieldModalLayout({super.key, required this.formField, this.height = 300.0});
-
-  final Widget formField;
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 300.0,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16.0)),
-      ),
-      child: Column(
-        children: [
-          // Header
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Theme.of(context).colorScheme.outline.withOpacity(0.2))),
-            ),
-            child: Center(child: Text('Select Capacity', style: Theme.of(context).textTheme.titleMedium)),
-          ),
-          // Picker
-          Expanded(child: formField),
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Save')),
-        ],
-      ),
-    );
-  }
-}
-
-class CustomPlatformPicker extends StatelessWidget {
-  const CustomPlatformPicker({super.key, required this.onSaved, this.initialValue = 1});
-
-  final void Function(int) onSaved;
-  final int initialValue;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 300.0,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16.0)),
-      ),
-      child: FormField<int>(
-        onSaved: (int? value) {
-          if (value != null) {
-            onSaved(value);
-          }
-        },
-        builder: (FormFieldState<int> state) {
-          return Column(
-            children: [
-              TECFormFieldHeader(),
-              Expanded(
-                child: CupertinoPicker(
-                  diameterRatio: 1.0,
-                  itemExtent: 32.0,
-                  scrollController: FixedExtentScrollController(initialItem: initialValue - 1),
-                  backgroundColor: Theme.of(context).colorScheme.surface,
-                  onSelectedItemChanged: (int index) {
-                    state.didChange(index + 1);
-                  },
-                  children: List.generate(
-                    20,
-                    (index) => (index + 1).toString(),
-                  ).map((capacity) => Center(child: Text(capacity))).toList(),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  state.save();
-                  Navigator.of(context).pop();
-                },
-                child: Text('Save'),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
-class TECFormFieldHeader extends StatelessWidget {
-  const TECFormFieldHeader({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Theme.of(context).colorScheme.outline.withOpacity(0.2))),
-      ),
-      child: Center(child: Text('Select Capacity', style: Theme.of(context).textTheme.titleMedium)),
     );
   }
 }

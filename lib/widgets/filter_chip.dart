@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_tec_listing_module_app/app_theme.dart';
 
 class FilterChip extends StatelessWidget {
   const FilterChip({super.key, required this.label, required this.icon, required this.onTap});
@@ -12,7 +13,7 @@ class FilterChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Chip(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppBorderRadius.medium)),
         avatar: Icon(icon, size: 18.0, color: Theme.of(context).colorScheme.surface),
         label: Text(label, style: Theme.of(context).textTheme.labelMedium),
         backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,

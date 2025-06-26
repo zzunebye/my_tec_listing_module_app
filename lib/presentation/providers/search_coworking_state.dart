@@ -19,11 +19,7 @@ class SearchCoworkingState extends _$SearchCoworkingState {
     // final List<CentreDto> centresUnderCurrentCity = centres.where((centre) => centre.cityCode == currentCityEntity.cityCode).toList();
     final List<CentreDto> centresUnderCurrentCity = await ref.watch(centresUnderCurrentCityProvider.future);
 
-    print('centresUnderCurrentCity: $centresUnderCurrentCity');
-
     final List<CentreDto> centresUnderCurrentCityAndFilter = centresUnderCurrentCity.where((element) {
-      print('element: ${element.localizedName?['en']}');
-      print('filter: ${filter.centres}');
       return filter.centres.contains(element.localizedName?['en']);
     }).toList();
 

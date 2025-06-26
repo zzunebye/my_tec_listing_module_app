@@ -9,7 +9,7 @@ part 'search_meeting_room_state.g.dart';
 @riverpod
 class SearchMeetingRoomState extends _$SearchMeetingRoomState {
   @override
-  FutureOr<SearchMeetingRoomStateEntity> build() async {
+  FutureOr<List<GroupedMeetingRoomEntity>> build() async {
     final repository = ref.read(meetingRoomRepositoryProvider);
 
     final CityState currentCityEntity = ref.watch(currentCityStateProvider);
@@ -17,14 +17,13 @@ class SearchMeetingRoomState extends _$SearchMeetingRoomState {
 
     final List<CentreDto> centresUnderCurrentCity = await ref.watch(centresUnderCurrentCityProvider.future);
 
-
     final meetingRooms = await repository.getMeetingRooms(
       filter,
       centresUnderCurrentCity,
       cityCode: currentCityEntity.cityCode,
     );
     // debugPrint('flag!: $meetingRooms');
-    return SearchMeetingRoomStateEntity(meetingRooms: meetingRooms);
+    return meetingRooms;
   }
 }
 

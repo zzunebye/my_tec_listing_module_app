@@ -37,17 +37,24 @@ class CoreMeApiService {
     required DateTime endDate,
     required String cityCode,
   }) async {
-    final Response response = await _dioClient.get(
-      CoreApiEndpoints.roomAvailabilities,
-      queryParameters: {
-        'startDate': startDate.toIso8601String(),
-        'endDate': endDate.toIso8601String(),
-        'cityCode': cityCode,
-      },
-    );
-    final List<Map> data = response.data.cast<Map>();
+    print('params: ${startDate.toIso8601String()}, ${endDate.toIso8601String()}, $cityCode');
+    try {
+      final Response response = await _dioClient.get(
+        CoreApiEndpoints.roomAvailabilities,
+        queryParameters: {
+          'startDate': startDate.toIso8601String(),
+          'endDate': endDate.toIso8601String(),
+          'cityCode': cityCode,
+        },
+      );
+      final List<Map> data = response.data.cast<Map>();
 
-    return data;
+      return data;
+    } on Exception catch (e, st) {
+      print('error: $e');
+      print('stack trace: $st');
+      rethrow;
+    }
   }
 
   Future<List<MeetingRoomPricingDto>> getRoomPricing({
@@ -68,8 +75,6 @@ class CoreMeApiService {
       },
     );
 
-    // print('flag a-1: ${response.data}');
-
     final List<MeetingRoomPricingDto> pricingList = (response.data as List<dynamic>)
         .map((e) => MeetingRoomPricingDto.fromJson(e))
         .toList();
@@ -78,7 +83,6 @@ class CoreMeApiService {
   }
 
   Future<MeetingRoomResponseDto> getAllRooms({int pageSize = 10, int pageNumber = 1, String? cityCode}) async {
-    print('params: $pageSize, $pageNumber, $cityCode');
     final response = await _dioClient.get(
       CoreApiEndpoints.meetingRooms,
       queryParameters: {'pageSize': pageSize, 'pageNumber': pageNumber, 'cityCode': cityCode},

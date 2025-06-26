@@ -5,6 +5,7 @@ import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
 import 'package:my_tec_listing_module_app/data/dto/meeting_room_pricing_dto.dart';
 import 'package:my_tec_listing_module_app/data/dto/responses/meeting_room_response_dto.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/meeting_room_filter_state.dart';
+import 'package:my_tec_listing_module_app/utils/date.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'meeting_room_repository.g.dart';
@@ -49,13 +50,27 @@ class MeetingRoomEntity {
   });
 }
 
+class GroupedMeetingRoomEntity {
+  final String centreName;
+  final String centreCode;
+  final List<MeetingRoomEntity> meetingRooms;
+  final double? distance;
+
+  GroupedMeetingRoomEntity({
+    required this.centreName,
+    required this.centreCode,
+    required this.meetingRooms,
+    this.distance,
+  });
+}
+
 class MeetingRoomRepository {
   final CoreApiService _coreApiService;
   final CoreMeApiService _coreMeApiService;
 
   MeetingRoomRepository(this._coreApiService, this._coreMeApiService);
 
-  Future<List<MeetingRoomEntity>> getMeetingRooms(
+  Future<List<GroupedMeetingRoomEntity>> getMeetingRooms(
     MeetingRoomFilter filter,
     List<CentreDto>? cachedCentres, {
     String cityCode = 'HKG',
@@ -83,47 +98,95 @@ class MeetingRoomRepository {
     final availabilityMap = {for (var item in availabilities) item['roomCode']: item};
     final pricingMap = {for (var item in pricings) item.roomCode: item};
 
+    final groupedMeetingRooms = roomsResponse.items.groupBy((room) => room.centreCode);
+
+    final List<GroupedMeetingRoomEntity> groupedMeetingRoomEntities = groupedMeetingRooms.entries.map((entry) {
+      final centreCode = entry.key;
+      final meetingRooms = entry.value;
+      final centre = centresMap[centreCode];
+      // final distance = centre?.distance;
+      // final distanceInMeters = distance != null ? distance * 1000 : null;
+
+      return GroupedMeetingRoomEntity(
+        centreName: centre?.localizedName?['en'] ?? centre?.id ?? 'Unknown Centre',
+        centreCode: centreCode,
+        meetingRooms: meetingRooms
+            .map<MeetingRoomEntity>((room) {
+              final availability = availabilityMap[room.roomCode];
+              final pricing = pricingMap[room.roomCode];
+
+              return MeetingRoomEntity(
+                roomCode: room.roomCode,
+                roomName: room.roomName,
+                centreCode: room.centreCode,
+                centreName: centre?.localizedName?['en'] ?? centre?.id ?? 'Unknown Centre',
+                centreAddress: centre?.localizedName?['en'] ?? 'Unknown Address',
+                floor: room.floor,
+                capacity: room.capacity,
+                hasVideoConference: room.hasVideoConference,
+                amenities: room.amenities,
+                photoUrls: room.photoUrls,
+                isBookable: room.isBookable,
+                isAvailable: availability?['isAvailable'] ?? false,
+                finalPrice: pricing?.finalPrice.toDouble(),
+                currencyCode: pricing?.currencyCode,
+                bestPricingStrategyName: pricing?.bestPricingStrategyName,
+                isWithinOfficeHour: availability?['isWithinOfficeHour'],
+              );
+            })
+            .where((entity) {
+              // Apply filters
+              if (entity.capacity < filter.capacity) return false;
+              if (filter.canVideoConference && !entity.hasVideoConference) return false;
+              if (filter.centres.isNotEmpty && !filter.centres.contains(entity.centreName)) return false;
+              // if (!entity.isBookable) return false;
+              return true;
+            })
+            .toList(),
+        // distance: distance,
+      );
+    }).toList();
+
     // Convert to entities and apply filters
-    final entities = roomsResponse.items
-        .map((room) {
-          final centre = centresMap[room.centreCode];
-          final availability = availabilityMap[room.roomCode];
-          final pricing = pricingMap[room.roomCode];
+    // final entities = roomsResponse.items
+    //     .map((room) {
+    //       final availability = availabilityMap[room.roomCode];
+    //       final centre = centresMap[room.centreCode];
+    //       final pricing = pricingMap[room.roomCode];
 
-          return MeetingRoomEntity(
-            roomCode: room.roomCode,
-            roomName: room.roomName,
-            centreCode: room.centreCode,
-            centreName: centre?.localizedName?['en'] ?? centre?.id ?? 'Unknown Centre',
-            centreAddress: centre?.localizedName?['en'] ?? 'Unknown Address',
-            floor: room.floor,
-            capacity: room.capacity,
-            hasVideoConference: room.hasVideoConference,
-            amenities: room.amenities,
-            photoUrls: room.photoUrls,
-            isBookable: room.isBookable,
-            isAvailable: availability?['isAvailable'] ?? false,
-            finalPrice: pricing?.finalPrice.toDouble(),
-            currencyCode: pricing?.currencyCode,
-            bestPricingStrategyName: pricing?.bestPricingStrategyName,
-            isWithinOfficeHour: availability?['isWithinOfficeHour'],
-          );
-        })
-        .where((entity) {
-          print('flag E: ${entity.centreName}');
-          print('flag F: ${filter.centres}');
-          print('flag G: ${filter.centres.contains(entity.centreName)}');
-          // Apply filters
-          if (entity.capacity < filter.capacity) return false;
-          if (filter.canVideoConference && !entity.hasVideoConference) return false;
-          // if (filter.centres.isNotEmpty && !filter.centres.contains(entity.centreName)) return false;
-          // if (!entity.isBookable) return false;
+    //       return MeetingRoomEntity(
+    //         roomCode: room.roomCode,
+    //         roomName: room.roomName,
+    //         centreCode: room.centreCode,
+    //         centreName: centre?.localizedName?['en'] ?? centre?.id ?? 'Unknown Centre',
+    //         centreAddress: centre?.localizedName?['en'] ?? 'Unknown Address',
+    //         floor: room.floor,
+    //         capacity: room.capacity,
+    //         hasVideoConference: room.hasVideoConference,
+    //         amenities: room.amenities,
+    //         photoUrls: room.photoUrls,
+    //         isBookable: room.isBookable,
+    //         isAvailable: availability?['isAvailable'] ?? false,
+    //         finalPrice: pricing?.finalPrice.toDouble(),
+    //         currencyCode: pricing?.currencyCode,
+    //         bestPricingStrategyName: pricing?.bestPricingStrategyName,
+    //         isWithinOfficeHour: availability?['isWithinOfficeHour'],
+    //       );
+    //     })
+    //     .where((entity) {
+    //       // print('flag F: ${filter.centres}');
+    //       // print('flag G: ${filter.centres.contains(entity.centreName)}');
+    //       // Apply filters
+    //       if (entity.capacity < filter.capacity) return false;
+    //       if (filter.canVideoConference && !entity.hasVideoConference) return false;
+    //       // if (filter.centres.isNotEmpty && !filter.centres.contains(entity.centreName)) return false;
+    //       // if (!entity.isBookable) return false;
 
-          return true;
-        })
-        .toList();
+    //       return true;
+    //     })
+    //     .toList();
 
-    return entities;
+    return groupedMeetingRoomEntities;
   }
 }
 

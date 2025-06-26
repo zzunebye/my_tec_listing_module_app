@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_tec_listing_module_app/app_theme.dart';
 import 'package:my_tec_listing_module_app/domain/repositories/meeting_room_repository.dart';
 import 'package:my_tec_listing_module_app/utils/date.dart';
 
@@ -22,18 +23,18 @@ class MeetingRoomCard extends StatelessWidget {
         Navigator.pushNamed(context, '/meeting-room-detail', arguments: meetingRoom);
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        margin: const EdgeInsets.symmetric(horizontal: AppSpacing.medium, vertical: AppSpacing.xSmall),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(AppBorderRadius.medium),
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+              color: Theme.of(context).colorScheme.outline.withOpacity(0.5),
               blurRadius: 10,
               offset: const Offset(0, 10),
             ),
           ],
-          border: Border.all(color: Theme.of(context).colorScheme.outline.withOpacity(0.2)),
+          border: Border.all(color: Theme.of(context).colorScheme.outline),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +80,7 @@ class MeetingRoomCard extends StatelessWidget {
                       top: 0,
                       right: 0,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xSmall, vertical: AppSpacing.xxSmall),
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.surface,
                           borderRadius: const BorderRadius.only(
@@ -100,7 +101,7 @@ class MeetingRoomCard extends StatelessWidget {
               ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.small, vertical: AppSpacing.xSmall),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -113,7 +114,7 @@ class MeetingRoomCard extends StatelessWidget {
                         style: Theme.of(context).textTheme.labelLarge,
                       ),
                       if (meetingRoom.hasVideoConference) ...[
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.xSmall),
                         Icon(Icons.videocam, size: 16, color: Theme.of(context).colorScheme.primary),
                       ],
                     ],
@@ -130,7 +131,7 @@ class MeetingRoomCard extends StatelessWidget {
                     children: [
                       Text('${meetingRoom.capacity} Seats', style: Theme.of(context).textTheme.labelSmall),
 
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.xSmall),
                       Text(
                         priceText,
                         style: Theme.of(

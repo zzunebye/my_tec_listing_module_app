@@ -34,6 +34,11 @@ String formatDateTimeToDateString(DateTime date) {
   }
 }
 
+String formatDateTimeToTimeString(DateTime date) {
+  final hour = date.hour == 0 ? 12 : (date.hour > 12 ? date.hour - 12 : date.hour);
+  return '$hour:${date.minute.toString().padLeft(2, '0')} ${date.hour < 12 ? 'AM' : 'PM'}';
+}
+
 String formatPriceInCurrency(double price, String currencyCode) {
   switch (currencyCode) {
     case 'HKD':
@@ -42,5 +47,18 @@ String formatPriceInCurrency(double price, String currencyCode) {
       return '₩${price.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (Match m) => '${m[1]},')}';
     default:
       return '$currencyCode ${price.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+\.)'), (Match m) => '${m[1]},')}';
+  }
+}
+
+extension CollectionExtension<T> on Iterable<T> {
+  Map<K, List<T>> groupBy<K>(K Function(T) keySelector) {
+    final Map<K, List<T>> result = {};
+    
+    for (final element in this) {
+      final key = keySelector(element);
+      result.putIfAbsent(key, () => []).add(element);
+    }
+    
+    return result;
   }
 }

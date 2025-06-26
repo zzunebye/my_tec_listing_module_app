@@ -1,13 +1,16 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:my_tec_listing_module_app/app_theme.dart';
+import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
+import 'package:my_tec_listing_module_app/domain/repositories/meeting_room_repository.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/search_coworking_state.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/search_meeting_room_state.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/current_city_state.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/meeting_room_filter_state.dart';
 import 'package:my_tec_listing_module_app/widgets/city_selection_dialog.dart';
 import 'package:my_tec_listing_module_app/widgets/coworking_list_view.dart';
+import 'package:my_tec_listing_module_app/widgets/filter_bottom_sheet.dart';
 import 'package:my_tec_listing_module_app/widgets/room_card.dart';
 import 'package:my_tec_listing_module_app/widgets/wrapped_filters.dart';
 
@@ -16,6 +19,9 @@ enum ViewMode { list, map }
 enum SearchMode { meetingRoom, coworking, dayOffice, eventSpace }
 
 class BookingListScreen extends StatefulHookConsumerWidget {
+  static const double minSheetChildSize = 0.17;
+  static const double midSheetChildSize = 0.6;
+  static const double maxSheetChildSize = 1.0;
   const BookingListScreen({super.key});
 
   @override
@@ -46,12 +52,9 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
     ValueNotifier<SearchMode> searchMode,
     SearchMode newSearchMode,
   ) async {
-    // TODO: In future, we may need to have more
-    // await ref.read(centreListStateProvider.future);
-    // final centres = await ref.read(centreListStateProvider.notifier).getCentresByCity(currentCity.cityCode);
     final centres = await ref.read(centresUnderCurrentCityProvider.future);
-
-    // ref.read(meetingRoomFilterStateProvider.notifier).reset();
+    if (!context.mounted) return;
+    displayFilterBottomSheet(context, currentCity, centres, filterState, searchMode, ref);
 
     final newFilterState = MeetingRoomFilter.defaultSettings().copyWith(
       centres: centres.map((centre) => centre.localizedName?['en'] ?? '').toList(),
@@ -74,10 +77,17 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
 
     final centresListUnderCurrentCity = ref.watch(centresUnderCurrentCityProvider.future);
 
+    // NOTE: Added to prevent the state from being reset when the list view is minimized.
+    if (topTapController.index == 0) {
+      ref.watch(searchMeetingRoomStateProvider);
+    } else if (topTapController.index == 1) {
+      ref.watch(searchCoworkingStateProvider);
+    }
+
     useEffect(() {
       void updateFullScreen() {
         final currentSize = draggableController.size;
-        if (currentSize == 1.0) {
+        if (currentSize == BookingListScreen.maxSheetChildSize) {
           isFullScreen.value = true;
         } else {
           isFullScreen.value = false;
@@ -86,9 +96,9 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
 
       void updateViewMode() {
         final currentSize = draggableController.size;
-        if (currentSize >= 0.5) {
+        if (currentSize >= BookingListScreen.midSheetChildSize) {
           viewMode.value = ViewMode.list;
-        } else if (currentSize <= 0.2) {
+        } else if (currentSize <= BookingListScreen.minSheetChildSize) {
           viewMode.value = ViewMode.map;
         }
       }
@@ -109,38 +119,13 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
         leading: IconButton(icon: const Icon(Icons.arrow_back_ios_new_rounded), onPressed: () => {}),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(kMinInteractiveDimension),
-          // padding: const EdgeInsets.all(8.0),
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
+            padding: const EdgeInsets.only(bottom: AppSpacing.xSmall),
             child: TabBar(
-              dragStartBehavior: DragStartBehavior.down,
-              // dividerHeight: 0,
-              dividerHeight: 0,
-              textScaler: TextScaler.linear(1.0),
-              tabAlignment: TabAlignment.start,
-              indicator: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 1.0)),
-                shape: BoxShape.rectangle,
-                // color: Theme.of(context).colorScheme.primary,
-                // borderRadius: BorderRadius.circular(16.0),
-              ),
+              splashFactory: NoSplash.splashFactory,
               onTap: (index) => handleOnTabTabBar(currentCity, filterState, searchMode, SearchMode.values[index]),
               controller: topTapController,
-              // padding: EdgeInsets.zero,
-              labelPadding: EdgeInsets.symmetric(horizontal: 12.0),
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              // labelPadding: EdgeInsets.zer,
-
-              // indicatorPadding: EdgeInsets.zero,
               indicatorWeight: 1,
-              indicatorSize: TabBarIndicatorSize.label,
-              indicatorColor: Theme.of(context).colorScheme.primary,
-              labelStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onSurface,
-                height: 1.0,
-              ),
-              dividerColor: Colors.transparent,
               isScrollable: true,
               tabs: [
                 Tab(text: 'Meeting Room'),
@@ -156,7 +141,10 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
             builder: (context, ref, child) {
               final currentCity = ref.watch(currentCityStateProvider);
               return TextButton(
-                style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.onSurface),
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.primary,
+                  textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                ),
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -176,24 +164,10 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                                 centres: centres.map((centre) => centre.localizedName?['en'] ?? '').toList(),
                               ),
                             );
-                        // print('currentCity: ${ref.read(currentCityStateProvider).cityCode}');
-
-                        // await ref.read(centreListStateProvider.future);
-                        // final centres = await ref
-                        //     .read(centreListStateProvider.notifier)
-                        //     .getCentresByCity(currentCity.cityCode);
-
-                        // // ref.read(meetingRoomFilterStateProvider.notifier).reset();
-
-                        // final newFilterState = MeetingRoomFilter.defaultSettings().copyWith(
-                        //   centres: centres.map((centre) => centre.localizedName?['en'] ?? '').toList(),
-                        // );
-
-                        // ref.read(meetingRoomFilterStateProvider.notifier).update(newFilterState);
                       },
                       currentCity: currentCity,
                     ),
-                    barrierDismissible: false,
+                    barrierDismissible: true,
                     useSafeArea: true,
                   );
                 },
@@ -202,8 +176,11 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(currentCity.cityName),
-                    SizedBox(width: 8),
-                    Transform.rotate(angle: 90 * 3.14 / 360, child: Icon(Icons.navigation_outlined)),
+                    SizedBox(width: AppSpacing.xSmall),
+                    Transform.translate(
+                      offset: Offset(0, -2),
+                      child: Transform.rotate(angle: 90 * 3.14 / 360, child: Icon(Icons.navigation_outlined)),
+                    ),
                   ],
                 ),
               );
@@ -216,7 +193,7 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
               // isFullScreen.value = false;
               if (viewMode.value == ViewMode.list) {
                 draggableController.animateTo(
-                  0.2,
+                  BookingListScreen.minSheetChildSize,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 );
@@ -224,14 +201,16 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                 // viewMode.value = ViewMode.map;
               } else {
                 draggableController.animateTo(
-                  1.0,
+                  BookingListScreen.maxSheetChildSize,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 );
                 // viewMode.value = ViewMode.list;
               }
             },
-            icon: viewMode.value == ViewMode.list ? const Icon(Icons.map) : const Icon(Icons.list),
+            icon: viewMode.value == ViewMode.list
+                ? const Icon(Icons.map_outlined)
+                : const Icon(Icons.format_list_bulleted_rounded),
           ),
         ],
       ),
@@ -245,13 +224,16 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
             child: Image.asset('assets/images/tec_map_sample.png', fit: BoxFit.cover),
           ),
           DraggableScrollableSheet(
-            initialChildSize: 0.2,
+            initialChildSize: BookingListScreen.minSheetChildSize,
             controller: draggableController,
             snap: true,
-            // expand: false,
-            minChildSize: 0.2,
-            maxChildSize: 1.0,
-            snapSizes: [0.2, 0.5, 1.0],
+            minChildSize: BookingListScreen.minSheetChildSize,
+            maxChildSize: BookingListScreen.maxSheetChildSize,
+            snapSizes: [
+              BookingListScreen.minSheetChildSize,
+              BookingListScreen.midSheetChildSize,
+              BookingListScreen.maxSheetChildSize,
+            ],
             builder: (BuildContext context, ScrollController scrollController) {
               return Container(
                 decoration: BoxDecoration(
@@ -265,31 +247,36 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                   physics: const ClampingScrollPhysics(),
                   slivers: [
                     // Draggable Handle
-                    isFullScreen.value == false
-                        ? SliverToBoxAdapter(
-                            child: Container(
-                              width: double.infinity,
-                              height: 32,
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surface,
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(20.0),
-                                  topRight: Radius.circular(20.0),
-                                ),
-                              ),
-                              child: Center(
-                                child: Container(
-                                  width: 48.0,
-                                  height: 4.0,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                ),
-                              ),
+                    SliverToBoxAdapter(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        height: isFullScreen.value == false ? 12 : 0,
+                        alignment: Alignment.bottomCenter,
+                        width: double.infinity,
+                        // height: 12,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(AppBorderRadius.large),
+                            topRight: Radius.circular(AppBorderRadius.large),
+                          ),
+                        ),
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            width: 64.0,
+                            height: 4.0,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.outlineVariant,
+
+                              // color: Theme.of(context).colorScheme.error,
+                              borderRadius: BorderRadius.circular(AppBorderRadius.small),
                             ),
-                          )
-                        : SliverToBoxAdapter(child: SizedBox.shrink()),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // : SliverToBoxAdapter(child: SizedBox.shrink()),
                     // Filter Section
                     if (searchMode.value != SearchMode.eventSpace)
                       SliverToBoxAdapter(
@@ -298,49 +285,41 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                           onTapDown: (details) {
                             print('tap down');
                           },
-                          onTapUp: (details) {
-                            print('tap up');
-                          },
                           onPanDown: (details) {
                             print('pan down');
-                          },
-                          onPanUpdate: (details) {
-                            print('pan update');
                           },
                           onVerticalDragUpdate: (details) {
                             print('vertical drag update');
                           },
-                          onVerticalDragDown: (details) {
-                            print('vertical drag down');
-                          },
-                          onVerticalDragEnd: (details) {
-                            print('vertical drag end');
-                          },
                           child: Column(
                             children: [
-                              SizedBox(height: 16),
+                              SizedBox(height: AppSpacing.medium),
                               Consumer(
                                 builder: (context, ref, child) {
                                   return FutureBuilder(
                                     future: centresListUnderCurrentCity,
                                     builder: (context, asyncSnapshot) {
                                       return WrappedFilters(
+                                        onFilterTapped: () {
+                                          displayFilterBottomSheet(
+                                            context,
+                                            currentCity,
+                                            asyncSnapshot.data ?? [],
+                                            filterState,
+                                            searchMode,
+                                            ref,
+                                          );
+                                        },
                                         centresInCurrentCity: asyncSnapshot.data ?? [],
                                         // NOTE: searchmode와 filterstate 연동이 애매하다.
                                         filterState: filterState,
                                         searchMode: searchMode.value,
-                                        onResetFilter: (filterState) {
-                                          ref.read(meetingRoomFilterStateProvider.notifier).reset();
-                                        },
-                                        onApplyFilter: (filterState) {
-                                          ref.read(meetingRoomFilterStateProvider.notifier).update(filterState);
-                                        },
                                       );
                                     },
                                   );
                                 },
                               ),
-                              SizedBox(height: 8),
+                              SizedBox(height: AppSpacing.xSmall),
                             ],
                           ),
                         ),
@@ -359,9 +338,30 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                               builder: (context, ref, child) {
                                 final searchMeetingRoomState = ref.watch(searchMeetingRoomStateProvider);
 
+                                ref.listen(searchMeetingRoomStateProvider, (previous, next) {
+                                  if (next.hasValue && next.value != previous?.value) {
+                                    // Calculate total count of meeting rooms
+                                    final totalCount =
+                                        next.valueOrNull?.fold<int>(
+                                          0,
+                                          (count, group) => count + group.meetingRooms.length,
+                                        ) ??
+                                        0;
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Found $totalCount meeting room${totalCount == 1 ? '' : 's'}'),
+                                        backgroundColor: Theme.of(context).colorScheme.primary,
+                                      ),
+                                    );
+                                  }
+                                });
+
                                 return searchMeetingRoomState.when(
-                                  data: (data) {
-                                    if (data.meetingRooms.isEmpty) {
+                                  skipLoadingOnRefresh: false,
+                                  skipLoadingOnReload: false,
+                                  data: (List<GroupedMeetingRoomEntity> data) {
+                                    if (data.isEmpty) {
                                       return Center(
                                         child: Text(
                                           'No meeting rooms found',
@@ -369,12 +369,11 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                                         ),
                                       );
                                     }
-                                    return ListView.builder(
-                                      // controller: scrollController,
-                                      itemCount: data.meetingRooms.length,
-                                      itemBuilder: (BuildContext context, int index) {
-                                        return MeetingRoomCard(meetingRoom: data.meetingRooms[index]);
+                                    return MeetingRoomListView(
+                                      onRefresh: () async {
+                                        ref.invalidate(searchMeetingRoomStateProvider);
                                       },
+                                      groupedMeetingRoomEntityList: data,
                                     );
                                   },
                                   error: (error, stackTrace) => Center(
@@ -420,7 +419,9 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                         return SliverToBoxAdapter(
                           child: SizedBox(
                             height: availableHeight > 100 ? availableHeight : 300, // Fallback height
-                            child: draggableController.size > 0.2 ? content : SizedBox.shrink(),
+                            child: draggableController.size > BookingListScreen.minSheetChildSize
+                                ? content
+                                : SizedBox.shrink(),
                           ),
                         );
                       },
@@ -432,6 +433,86 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<dynamic> displayFilterBottomSheet(
+    BuildContext context,
+    CityState currentCity,
+    List<CentreDto> centresInCurrentCity,
+    MeetingRoomFilter filterState,
+    ValueNotifier<SearchMode> searchMode,
+    WidgetRef ref,
+  ) {
+    return showModalBottomSheet(
+      isScrollControlled: true,
+      enableDrag: true,
+      useRootNavigator: true,
+      context: context,
+      builder: (context) => SafeArea(
+        child: FilterBottomSheet(
+          currentCity: currentCity,
+          centres: centresInCurrentCity,
+          filterState: filterState,
+          searchMode: searchMode.value,
+          onApply: (filterState) => ref.read(meetingRoomFilterStateProvider.notifier).update(filterState),
+          onReset: (filterState) => ref.read(meetingRoomFilterStateProvider.notifier).reset(),
+        ),
+      ),
+    );
+  }
+}
+
+class MeetingRoomListView extends StatelessWidget {
+  const MeetingRoomListView({required this.onRefresh, required this.groupedMeetingRoomEntityList, super.key});
+
+  final RefreshCallback onRefresh;
+  final List<GroupedMeetingRoomEntity> groupedMeetingRoomEntityList;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: onRefresh,
+            child: ListView.builder(
+              // controller: scrollController,
+              itemCount: groupedMeetingRoomEntityList.fold<int>(
+                0,
+                (count, group) => count + group.meetingRooms.length + 1,
+              ),
+              itemBuilder: (BuildContext context, int index) {
+                int currentIndex = 0;
+                for (final group in groupedMeetingRoomEntityList) {
+                  if (group.meetingRooms.isEmpty) continue;
+                  // Check if this index is the group header
+                  if (index == currentIndex) {
+                    return Padding(
+                      padding: const EdgeInsets.all(AppSpacing.medium),
+                      child: Text(
+                        group.centreName,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    );
+                  }
+                  currentIndex++;
+
+                  // Check if this index is within this group's meeting rooms
+                  if (index >= currentIndex && index < currentIndex + group.meetingRooms.length) {
+                    final roomIndex = index - currentIndex;
+                    return MeetingRoomCard(meetingRoom: group.meetingRooms[roomIndex]);
+                  }
+                  currentIndex += group.meetingRooms.length;
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

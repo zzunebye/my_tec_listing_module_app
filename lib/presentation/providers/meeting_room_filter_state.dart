@@ -52,18 +52,18 @@ class MeetingRoomFilter {
         })(),
         startTime: (() {
           final now = DateTime.now();
-          if (now.hour >= 18) {
+          if (now.hour >= 18 || now.hour < 7) {
             return DateTime(now.year, now.month, now.day + 1, 10, 0);
           }
-          final minutesToAdd = (15 - now.minute % 15) % 15;
+          final minutesToAdd = (30 - now.minute % 30) % 30;
           return DateTime(now.year, now.month, now.day, now.hour, now.minute + minutesToAdd);
         })(),
         endTime: (() {
           final now = DateTime.now();
-          if (now.hour >= 18) {
+          if (now.hour >= 18 || now.hour < 7) {
             return DateTime(now.year, now.month, now.day + 1, 10, 30);
           }
-          final minutesToAdd = (15 - now.minute % 15) % 15;
+          final minutesToAdd = (30 - now.minute % 30) % 30;
           return DateTime(now.year, now.month, now.day, now.hour, now.minute + minutesToAdd + 30);
         })(),
         canVideoConference: false,
