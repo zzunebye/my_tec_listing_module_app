@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:my_tec_listing_module_app/app_theme.dart';
-import 'package:my_tec_listing_module_app/domain/repositories/meeting_room_repository.dart';
+import 'package:my_tec_listing_module_app/domain/entities/meeting_room_entity.dart';
 
 class MeetingRoomDetailScreen extends StatelessWidget {
   const MeetingRoomDetailScreen({super.key, required this.entity});
   final MeetingRoomEntity entity;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_tec_listing_module_app/app_theme.dart';
 import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
+import 'package:my_tec_listing_module_app/domain/entities/grouped_meeting_room_entity.dart';
 import 'package:my_tec_listing_module_app/domain/repositories/meeting_room_repository.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/search_coworking_state.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/search_meeting_room_state.dart';
@@ -344,7 +345,7 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                                     final totalCount =
                                         next.valueOrNull?.fold<int>(
                                           0,
-                                          (count, group) => count + group.meetingRooms.length,
+                                          (count, GroupedMeetingRoomEntity group) => count + group.meetingRooms.length,
                                         ) ??
                                         0;
 

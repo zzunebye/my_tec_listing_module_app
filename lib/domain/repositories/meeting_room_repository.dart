@@ -4,65 +4,13 @@ import 'package:my_tec_listing_module_app/data/api/core_me_api_service.dart';
 import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
 import 'package:my_tec_listing_module_app/data/dto/meeting_room_pricing_dto.dart';
 import 'package:my_tec_listing_module_app/data/dto/responses/meeting_room_response_dto.dart';
+import 'package:my_tec_listing_module_app/domain/entities/grouped_meeting_room_entity.dart';
+import 'package:my_tec_listing_module_app/domain/entities/meeting_room_entity.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/meeting_room_filter_state.dart';
 import 'package:my_tec_listing_module_app/utils/date.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'meeting_room_repository.g.dart';
-
-class MeetingRoomEntity {
-  final String roomCode;
-  final String roomName;
-  final String centreCode;
-  final String centreName;
-  final String centreAddress;
-  final String floor;
-  final int capacity;
-  final bool hasVideoConference;
-  final List<String> amenities;
-  final List<String>? photoUrls;
-  final bool isBookable;
-  final bool isAvailable;
-  final double? finalPrice;
-  final String? currencyCode;
-  final String? bestPricingStrategyName;
-  final bool? isWithinOfficeHour;
-  final double? distance;
-
-  MeetingRoomEntity({
-    required this.roomCode,
-    required this.roomName,
-    required this.centreCode,
-    required this.centreName,
-    required this.centreAddress,
-    required this.floor,
-    required this.capacity,
-    required this.hasVideoConference,
-    required this.amenities,
-    this.photoUrls,
-    required this.isBookable,
-    required this.isAvailable,
-    this.finalPrice,
-    this.currencyCode,
-    this.bestPricingStrategyName,
-    this.isWithinOfficeHour,
-    this.distance,
-  });
-}
-
-class GroupedMeetingRoomEntity {
-  final String centreName;
-  final String centreCode;
-  final List<MeetingRoomEntity> meetingRooms;
-  final double? distance;
-
-  GroupedMeetingRoomEntity({
-    required this.centreName,
-    required this.centreCode,
-    required this.meetingRooms,
-    this.distance,
-  });
-}
 
 class MeetingRoomRepository {
   final CoreApiService _coreApiService;
@@ -134,7 +82,7 @@ class MeetingRoomRepository {
                 isWithinOfficeHour: availability?['isWithinOfficeHour'],
               );
             })
-            .where((entity) {
+            .where((MeetingRoomEntity entity) {
               // Apply filters
               if (entity.capacity < filter.capacity) return false;
               if (filter.canVideoConference && !entity.hasVideoConference) return false;

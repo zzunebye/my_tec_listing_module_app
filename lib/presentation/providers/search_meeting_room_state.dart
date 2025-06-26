@@ -1,4 +1,6 @@
 import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
+import 'package:my_tec_listing_module_app/domain/entities/grouped_meeting_room_entity.dart';
+import 'package:my_tec_listing_module_app/domain/entities/meeting_room_entity.dart';
 import 'package:my_tec_listing_module_app/domain/repositories/meeting_room_repository.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/current_city_state.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/meeting_room_filter_state.dart';

@@ -4,7 +4,6 @@ part 'meeting_room_dto.g.dart';
 
 @JsonSerializable()
 class MeetingRoomDto {
-
   final String centreCode;
   final String roomCode;
   final String roomName;
@@ -17,7 +16,6 @@ class MeetingRoomDto {
   final bool isFromNewObs;
   final bool isClosed;
   final bool isInternal;
-  // final List<(String languageCode, String value)> terms;
 
   MeetingRoomDto({
     required this.centreCode,
@@ -32,10 +30,9 @@ class MeetingRoomDto {
     required this.isFromNewObs,
     required this.isClosed,
     required this.isInternal,
-    // required this.terms,
   });
 
   factory MeetingRoomDto.fromJson(Map<String, dynamic> json) => _$MeetingRoomDtoFromJson(json);
 
-  Map<String,dynamic> toJson() => _$MeetingRoomDtoToJson(this);
+  Map<String, dynamic> toJson() => _$MeetingRoomDtoToJson(this);
 }

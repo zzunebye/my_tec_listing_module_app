@@ -92,7 +92,7 @@ class FilterBottomSheet extends HookWidget {
                   title: 'Date',
                   child: TextFormField(
                     style: Theme.of(context).textTheme.labelLarge,
-                    controller: TextEditingController(text: localFilterState.value.date.toString().split(' ')[0]),
+                    controller: TextEditingController(text: formatDateTimeToDateString(localFilterState.value.date)),
                     readOnly: true,
                     decoration: InputDecoration(suffixIcon: Icon(Icons.calendar_today_outlined)),
                     onTap: () async {
