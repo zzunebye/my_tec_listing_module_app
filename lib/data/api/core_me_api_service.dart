@@ -37,7 +37,6 @@ class CoreMeApiService {
     required DateTime endDate,
     required String cityCode,
   }) async {
-    print('params: ${startDate.toIso8601String()}, ${endDate.toIso8601String()}, $cityCode');
     try {
       final Response response = await _dioClient.get(
         CoreApiEndpoints.roomAvailabilities,
@@ -51,8 +50,6 @@ class CoreMeApiService {
 
       return data;
     } on Exception catch (e, st) {
-      print('error: $e');
-      print('stack trace: $st');
       rethrow;
     }
   }

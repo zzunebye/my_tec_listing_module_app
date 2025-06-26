@@ -12,9 +12,9 @@ class SplashScreen extends HookConsumerWidget {
 
 
     ref.listen(groupedCityListStateProvider, (previous, next) {
-      if (next.value != null) {
+      // if (next.value != null) {
         Navigator.pushReplacementNamed(context, '/booking-list');
-      }
+      // }
     });
 
     // Future.delayed(const Duration(milliseconds: 100), () {

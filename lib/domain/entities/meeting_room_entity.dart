@@ -36,4 +36,6 @@ class MeetingRoomEntity {
     this.isWithinOfficeHour,
     this.distance,
   });
+
+  bool get isUnavailable => isWithinOfficeHour == false || isAvailable == false || isBookable == false;
 }

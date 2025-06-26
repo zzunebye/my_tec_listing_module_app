@@ -12,7 +12,6 @@ class GroupedCityListState extends _$GroupedCityListState {
   @override
   FutureOr<List<RegionWithCitiesEntity>> build() async {
     // Get the raw city list
-    // final cities = await ref.watch(cityListStateProvider.future);
     ref.keepAlive();
     final CoreApiService coreApiService = ref.read(coreApiServiceProvider);
     final GetCitiesResponseDto cities = await coreApiService.getCities(pageSize: 50);

@@ -8,16 +8,22 @@ class MeetingRoomCard extends StatelessWidget {
 
   const MeetingRoomCard({super.key, required this.meetingRoom});
 
+  String? get priceText {
+    if (meetingRoom.finalPrice != null && meetingRoom.currencyCode != null) {
+      return '${formatPriceInCurrency(meetingRoom.finalPrice!, meetingRoom.currencyCode!)} / hour';
+    }
+    return 'Price not available';
+  }
+
+  String? get distanceText {
+    if (meetingRoom.distance != null) {
+      return '${meetingRoom.centreName}, ${meetingRoom.distance!.toStringAsFixed(0)}m distance';
+    }
+    return meetingRoom.centreName;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final priceText = meetingRoom.finalPrice != null && meetingRoom.currencyCode != null
-        ? '${formatPriceInCurrency(meetingRoom.finalPrice!, meetingRoom.currencyCode!)} / hour'
-        : 'Price not available';
-
-    final distanceText = meetingRoom.distance != null
-        ? '${meetingRoom.centreName}, ${meetingRoom.distance!.toStringAsFixed(0)}m distance'
-        : meetingRoom.centreName;
-
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, '/meeting-room-detail', arguments: meetingRoom);
@@ -48,12 +54,16 @@ class MeetingRoomCard extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(12.0)),
                       child: ColorFiltered(
-                        colorFilter: meetingRoom.isAvailable
-                            ? const ColorFilter.mode(Colors.transparent, BlendMode.color)
-                            : ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.darken),
+                        colorFilter: meetingRoom.isUnavailable
+                            ? ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.darken)
+                            : const ColorFilter.mode(Colors.transparent, BlendMode.color),
                         child: meetingRoom.photoUrls != null && meetingRoom.photoUrls!.isNotEmpty
                             ? Image.network(
                                 meetingRoom.photoUrls!.first,
+                                loadingBuilder: (context, child, loadingProgress) {
+                                  if (loadingProgress == null) return child;
+                                  return const Center(child: CircularProgressIndicator());
+                                },
                                 height: 160,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
@@ -75,12 +85,15 @@ class MeetingRoomCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (!meetingRoom.isAvailable)
+                  if (meetingRoom.isUnavailable)
                     Positioned(
                       top: 0,
                       right: 0,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xSmall, vertical: AppSpacing.xxSmall),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.xSmall,
+                          vertical: AppSpacing.xxSmall,
+                        ),
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.surface,
                           borderRadius: const BorderRadius.only(
@@ -121,7 +134,7 @@ class MeetingRoomCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    distanceText,
+                    distanceText ?? '',
                     style: Theme.of(
                       context,
                     ).textTheme.labelMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
@@ -133,7 +146,7 @@ class MeetingRoomCard extends StatelessWidget {
 
                       const SizedBox(height: AppSpacing.xSmall),
                       Text(
-                        priceText,
+                        priceText ?? 'Price not available',
                         style: Theme.of(
                           context,
                         ).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.primary),

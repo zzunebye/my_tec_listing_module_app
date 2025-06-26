@@ -417,6 +417,7 @@ class FilterBottomSheet extends HookWidget {
                   },
                   child: Text('Apply'),
                 ),
+                SizedBox(height: MediaQuery.of(context).systemGestureInsets.bottom),
               ],
             ),
           ),

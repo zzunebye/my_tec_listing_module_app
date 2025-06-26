@@ -219,9 +219,9 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
         fit: StackFit.expand,
         children: [
           InteractiveViewer(
-            boundaryMargin: const EdgeInsets.all(20.0),
-            minScale: 0.5,
-            maxScale: 4.0,
+            boundaryMargin: const EdgeInsets.all(8.0),
+            minScale: 2,
+            maxScale: 2.0,
             child: Image.asset('assets/images/tec_map_sample.png', fit: BoxFit.cover),
           ),
           DraggableScrollableSheet(
@@ -447,8 +447,9 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
   ) {
     return showModalBottomSheet(
       isScrollControlled: true,
+      useSafeArea: true,
       enableDrag: true,
-      useRootNavigator: true,
+      // useRootNavigator: true,
       context: context,
       builder: (context) => SafeArea(
         child: FilterBottomSheet(
