@@ -9,7 +9,6 @@ class MeetingRoomFilterState extends _$MeetingRoomFilterState {
   @override
   MeetingRoomFilter build() {
     final currentCity = ref.watch(currentCityStateProvider);
-    print('currentCity: ${currentCity.cityCode}');
     return MeetingRoomFilter.defaultSettings();
   }
 
@@ -44,14 +43,26 @@ class MeetingRoomFilter {
   MeetingRoomFilter.defaultSettings()
     : this(
         capacity: 4,
-        date: DateTime.now(),
+        date: (() {
+          final now = DateTime.now();
+          if (now.hour >= 18) {
+            return DateTime(now.year, now.month, now.day + 1);
+          }
+          return DateTime(now.year, now.month, now.day);
+        })(),
         startTime: (() {
           final now = DateTime.now();
+          if (now.hour >= 18) {
+            return DateTime(now.year, now.month, now.day + 1, 10, 0);
+          }
           final minutesToAdd = (15 - now.minute % 15) % 15;
           return DateTime(now.year, now.month, now.day, now.hour, now.minute + minutesToAdd);
         })(),
         endTime: (() {
           final now = DateTime.now();
+          if (now.hour >= 18) {
+            return DateTime(now.year, now.month, now.day + 1, 10, 30);
+          }
           final minutesToAdd = (15 - now.minute % 15) % 15;
           return DateTime(now.year, now.month, now.day, now.hour, now.minute + minutesToAdd + 30);
         })(),

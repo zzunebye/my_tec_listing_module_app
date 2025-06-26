@@ -55,7 +55,7 @@ final coreMeDioProvider = Provider<Dio>((ref) {
       ),
     )
     ..interceptors.add(
-          InterceptorsWrapper(
+      InterceptorsWrapper(
         onRequest: (options, handler) {
           debugPrint('REQUEST PATH ${options.method} => ${options.path}');
           debugPrint('REQUEST QUERY PARAMETERS => ${options.queryParameters}');

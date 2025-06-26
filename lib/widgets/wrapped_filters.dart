@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/meeting_room_filter_state.dart';
 import 'package:my_tec_listing_module_app/screens/booking_list_screen.dart';
+import 'package:my_tec_listing_module_app/utils/date.dart';
 import 'package:my_tec_listing_module_app/widgets/filter_bottom_sheet.dart';
 
 class WrappedFilters extends HookWidget {
@@ -61,13 +62,7 @@ class WrappedFilters extends HookWidget {
             visualDensity: VisualDensity.compact,
             avatar: Icon(Icons.today, size: 18.0, color: Theme.of(context).colorScheme.onSurface),
             key: Key('filter_chip_1'),
-            label: Text(
-              DateTime.now().year == filterState.date.year &&
-                      DateTime.now().month == filterState.date.month &&
-                      DateTime.now().day == filterState.date.day
-                  ? 'Today'
-                  : filterState.date.toString().split(' ')[0],
-            ),
+            label: Text(formatDateTimeToDateString(filterState.date)),
             onSelected: (selected) => openFilterDialog(context, filterState),
           ),
           if (searchMode == SearchMode.meetingRoom)

@@ -30,6 +30,30 @@ class FilterBottomSheet extends HookWidget {
   Widget build(BuildContext context) {
     final localFilterState = useState(filterState);
     final formKeyRef = useRef(GlobalKey<FormState>());
+    final filterTargetStartTime = useMemoized(() {
+      final date = localFilterState.value.date;
+      final startTime = localFilterState.value.startTime;
+      return DateTime(
+        date.year,
+        date.month,
+        date.day,
+        startTime.hour,
+        startTime.minute,
+      );
+    }, [localFilterState.value]);
+
+    final filterTargetEndTime = useMemoized(() {
+      final date = localFilterState.value.date;
+      final endTime = localFilterState.value.endTime;
+      return DateTime(
+        date.year,
+        date.month,
+        date.day,
+        endTime.hour,
+        endTime.minute,
+      );
+    }, [localFilterState.value]);
+
     return Form(
       // onChanged: () {
       //   localFilterState.value = filterState;
@@ -95,10 +119,10 @@ class FilterBottomSheet extends HookWidget {
                       ),
                       validator: (String? value) {
                         if (value == null || value.isEmpty) return 'Start Time is required';
-                        if (localFilterState.value.startTime.isBefore(DateTime.now())) {
+                        if (filterTargetStartTime.isBefore(DateTime.now())) {
                           return 'Booking cannot be scheduled in the past';
                         }
-                        if (localFilterState.value.startTime.isAfter(localFilterState.value.endTime)) {
+                        if (filterTargetStartTime.isAfter(filterTargetEndTime)) {
                           return 'Start Time must be before End Time';
                         }
                         return null;
@@ -140,7 +164,7 @@ class FilterBottomSheet extends HookWidget {
                       readOnly: true,
                       validator: (String? value) {
                         if (value == null || value.isEmpty) return 'End Time is required';
-                        if (localFilterState.value.startTime.isAfter(localFilterState.value.endTime)) {
+                        if (filterTargetStartTime.isAfter(filterTargetEndTime)) {
                           return 'End Time must be after Start Time';
                         }
                         return null;

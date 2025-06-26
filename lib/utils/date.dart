@@ -19,6 +19,21 @@ String getWeekdayString(int weekday) {
   }
 }
 
+String formatDateTimeToDateString(DateTime date) {
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final tomorrow = today.add(const Duration(days: 1));
+  final targetDate = DateTime(date.year, date.month, date.day);
+  
+  if (targetDate == today) {
+    return 'Today';
+  } else if (targetDate == tomorrow) {
+    return 'Tomorrow';
+  } else {
+    return date.toString().split(' ')[0];
+  }
+}
+
 String formatPriceInCurrency(double price, String currencyCode) {
   switch (currencyCode) {
     case 'HKD':

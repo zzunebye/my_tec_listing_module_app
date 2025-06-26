@@ -1,5 +1,4 @@
 import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
-import 'package:my_tec_listing_module_app/presentation/providers/centre_list_state.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/current_city_state.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/meeting_room_filter_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
