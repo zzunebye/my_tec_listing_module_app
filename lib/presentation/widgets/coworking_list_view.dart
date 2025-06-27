@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/meeting_room_filter_state.dart';
-import 'package:my_tec_listing_module_app/presentation/screens/booking_list_screen.dart';
 import 'package:my_tec_listing_module_app/presentation/widgets/coworking_card.dart';
 
 class CoworkingListView extends StatelessWidget {

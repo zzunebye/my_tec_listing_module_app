@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:my_tec_listing_module_app/presentation/providers/current_city_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:my_tec_listing_module_app/theme/app_theme.dart';
 import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
 import 'package:my_tec_listing_module_app/domain/entities/grouped_meeting_room_entity.dart';
-import 'package:my_tec_listing_module_app/domain/repositories/meeting_room_repository.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/search_coworking_state.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/search_meeting_room_state.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/current_city_state.dart';

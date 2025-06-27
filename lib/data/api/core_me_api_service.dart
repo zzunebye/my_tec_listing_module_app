@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import 'package:my_tec_listing_module_app/core/networks/dio_providers.dart';
 import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
 import 'package:my_tec_listing_module_app/data/dto/meeting_room_pricing_dto.dart';
 import 'package:my_tec_listing_module_app/data/dto/responses/meeting_room_response_dto.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../core/networks/dio_providers.dart';
 
 part 'core_me_api_service.g.dart';
 

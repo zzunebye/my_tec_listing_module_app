@@ -14,9 +14,6 @@ class SearchCoworkingState extends _$SearchCoworkingState {
     final CityState currentCityEntity = ref.watch(currentCityStateProvider);
     final MeetingRoomFilter filter = ref.watch(meetingRoomFilterStateProvider);
 
-    // final List<CityDto> cities = await ref.watch(cityListStateProvider.future);
-    // final List<CentreDto> centres = await ref.watch(centreListStateProvider.future);
-    // final List<CentreDto> centresUnderCurrentCity = centres.where((centre) => centre.cityCode == currentCityEntity.cityCode).toList();
     final List<CentreDto> centresUnderCurrentCity = await ref.watch(centresUnderCurrentCityProvider.future);
 
     final List<CentreDto> centresUnderCurrentCityAndFilter = centresUnderCurrentCity.where((element) {

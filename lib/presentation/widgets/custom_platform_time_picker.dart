@@ -24,9 +24,9 @@ class CustomPlatformTimePicker extends StatelessWidget {
       ),
       child: FormField(
         validator: (DateTime? value) {
-          // if (value == null) {
+          if (value == null) {
             return 'Time is required';
-          // }
+          }
           return null;
         },
         onSaved: (DateTime? value) {
