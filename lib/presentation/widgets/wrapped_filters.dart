@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:my_tec_listing_module_app/theme/app_theme.dart';
 import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/meeting_room_filter_state.dart';
-import 'package:my_tec_listing_module_app/screens/booking_list_screen.dart';
+import 'package:my_tec_listing_module_app/presentation/screens/booking_list_screen.dart';
 import 'package:my_tec_listing_module_app/utils/date.dart';
 
 class WrappedFilters extends HookWidget {
