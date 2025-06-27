@@ -18,7 +18,7 @@ class WrappedFilters extends HookWidget {
   final SearchMode searchMode;
   final MeetingRoomFilter filterState;
   final List<CentreDto> centresInCurrentCity;
-  final void Function() onFilterTapped;
+  final void Function(String?) onFilterTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -32,39 +32,46 @@ class WrappedFilters extends HookWidget {
           FilterChip(
             shadowColor: Theme.of(context).colorScheme.outline,
             visualDensity: VisualDensity.compact,
-            avatar: Icon(Icons.filter_list_outlined),
+            avatar: Icon(Icons.filter_list_outlined, color: AppColors.primary),
             key: Key('filter_chip_0'),
-            label: Text('Filter'),
-            onSelected: (selected) => onFilterTapped(),
+            label: Text('Filter', style: Theme.of(context).textTheme.labelMedium?.copyWith(color: AppColors.primary)),
+            onSelected: (selected) => onFilterTapped(null),
           ),
           FilterChip(
             visualDensity: VisualDensity.compact,
-            avatar: Icon(Icons.today_outlined),
+            avatar: Icon(Icons.calendar_today_outlined, color: AppColors.subtitle),
             key: Key('filter_chip_1'),
-            label: Text(formatDateTimeToDateString(filterState.date)),
-            onSelected: (selected) => onFilterTapped(),
+            label: Text(
+              formatDateTimeToDateString(filterState.date),
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(color: AppColors.subtitle),
+            ),
+            onSelected: (selected) => onFilterTapped('date'),
           ),
           if (searchMode == SearchMode.meetingRoom)
             FilterChip(
               visualDensity: VisualDensity.compact,
-              avatar: Icon(Icons.access_time_outlined),
+              avatar: Icon(Icons.access_time_outlined, color: AppColors.subtitle),
               key: Key('filter_chip_2'),
               label: Text(
                 '${formatDateTimeToTimeString(filterState.startTime)} - ${formatDateTimeToTimeString(filterState.endTime)}',
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(color: AppColors.subtitle),
               ),
-              onSelected: (selected) => onFilterTapped(),
+              onSelected: (selected) => onFilterTapped('start_time'),
             ),
           if (searchMode == SearchMode.meetingRoom || searchMode == SearchMode.dayOffice)
             FilterChip(
               visualDensity: VisualDensity.compact,
-              avatar: Icon(Icons.people_outline_outlined),
+              avatar: Icon(Icons.people_outline_outlined, color: AppColors.subtitle),
               key: Key('filter_chip_3'),
-              label: Text('${filterState.capacity} Seats'),
-              onSelected: (selected) => onFilterTapped(),
+              label: Text(
+                '${filterState.capacity} Seats',
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(color: AppColors.subtitle),
+              ),
+              onSelected: (selected) => onFilterTapped('capacity'),
             ),
           FilterChip(
             visualDensity: VisualDensity.compact,
-            avatar: Icon(Icons.location_city_outlined),
+            avatar: Icon(Icons.location_city_outlined, color: AppColors.subtitle),
             key: Key('filter_chip_4'),
             label: Text(() {
               final selectedItemCount = filterState.centres.length;
@@ -72,8 +79,8 @@ class WrappedFilters extends HookWidget {
               return selectedItemCount == totalCountUnderCentres
                   ? 'All centres in the City'
                   : '$selectedItemCount centres selected';
-            }()),
-            onSelected: (selected) => onFilterTapped(),
+            }(), style: Theme.of(context).textTheme.labelMedium?.copyWith(color: AppColors.subtitle)),
+            onSelected: (selected) => onFilterTapped('centres'),
           ),
         ],
       ),

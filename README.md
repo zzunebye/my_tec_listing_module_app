@@ -121,17 +121,17 @@ lib/
   - meeting_room_list_view: A list view for meeting room data.
 
 
-#### Blocker for DraggableScrollableSheet
+### Blocker for DraggableScrollableSheet
 
 The booking_list_screen implements a draggable bottom sheet interface using `DraggableScrollableSheet` that allows users to seamlessly switch between map and list views. However, there were several challenges in implementing smooth scroll interactions:
 
-##### 1. Scroll Interaction Challenge
+#### 1. Scroll Interaction Challenge
 
 - Initially, the list view of room cards was not scrollable when DraggableScrollableSheet was not fully expanded
 - This occurred because DraggableScrollableSheet's drag gesture changes its size until reaching a limit before allowing scrolling
 - If maxChildSize limit (1.0) is not reached, scrolling cannot start
 
-##### 2. Solution: Separating Scroll Behaviors
+#### 2. Solution: Separating Scroll Behaviors
 
 - Separated the scrolling of the sheet and list view by:
   1. Wrapping ListView in a CustomScrollView inside the sheet
@@ -143,7 +143,7 @@ The booking_list_screen implements a draggable bottom sheet interface using `Dra
   2. This makes sheet think it's always fully expanded from its perspective
   3. Enables smooth scrolling of nested ListView even when sheet is partially expanded
 
-##### 3. Drag Bar Interaction
+#### 3. Drag Bar Interaction
 
 - When sheet is at maxSize, the drag bar is hidden but users could still trigger sheet resizing
 - Added GestureDetector to override vertical scroll events when appropriate
@@ -161,10 +161,18 @@ The booking_list_screen implements a draggable bottom sheet interface using `Dra
 
 ### **Known Issues**
 
+- No pagination for large room lists and necessary room data loaded at once (Performance Concerns)
+- Draggable sheet's scrolling behavior may not be consistent
 - Limited error handling implementation
-- No pagination for large room lists (Performance Concerns)
-- All room data loaded at once (Performance Concerns)
-- Draggable sheet behavior may be inconsistent on some devices (UX Issues)
 - Some debug print statements left in production code
 - Missing unit tests.
 - Multi-language infrastructure not existing, some UI strings are hardcoded
+
+## UI/UX Differences from original app
+
+1. To display how many meeting rooms are fetched from server based on the filter, a snackbar is displayed when the search    data is fetched.
+2. The filter bottom sheet will display the dialogs for specific filter when the user taps on the filter chip about specific filter field.
+
+
+
+

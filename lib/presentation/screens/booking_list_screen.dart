@@ -55,7 +55,7 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
   ) async {
     final centres = await ref.read(centresUnderCurrentCityProvider.future);
     if (!context.mounted) return;
-    displayFilterBottomSheet(context, currentCity, centres, filterState, searchMode, ref);
+    displayFilterBottomSheet(context, currentCity, centres, filterState, searchMode, ref, null);
 
     final newFilterState = MeetingRoomFilter.defaultSettings().copyWith(
       centres: centres.map((centre) => centre.localizedName?['en'] ?? '').toList(),
@@ -219,10 +219,10 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
         fit: StackFit.expand,
         children: [
           InteractiveViewer(
-            boundaryMargin: const EdgeInsets.all(8.0),
-            minScale: 2,
-            maxScale: 2.0,
-            child: Image.asset('assets/images/tec_map_sample.png', fit: BoxFit.cover),
+            minScale: 2.0,
+            maxScale: 3.0,
+            alignment: Alignment.center,
+            child: Image.asset('assets/images/tec_map_sample.png', fit: BoxFit.fitHeight),
           ),
           DraggableScrollableSheet(
             initialChildSize: BookingListScreen.minSheetChildSize,
@@ -304,7 +304,7 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                                     future: centresListUnderCurrentCity,
                                     builder: (context, asyncSnapshot) {
                                       return WrappedFilters(
-                                        onFilterTapped: () {
+                                        onFilterTapped: (String? tappedFormFieldKey) {
                                           displayFilterBottomSheet(
                                             context,
                                             currentCity,
@@ -312,6 +312,7 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                                             filterState,
                                             searchMode,
                                             ref,
+                                            tappedFormFieldKey,
                                           );
                                         },
                                         centresInCurrentCity: asyncSnapshot.data ?? [],
@@ -447,12 +448,12 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
     MeetingRoomFilter filterState,
     ValueNotifier<SearchMode> searchMode,
     WidgetRef ref,
+    String? tappedFormField,
   ) {
     return showModalBottomSheet(
       isScrollControlled: true,
       useSafeArea: true,
       enableDrag: true,
-      // useRootNavigator: true,
       context: context,
       builder: (context) => SafeArea(
         child: FilterBottomSheet(
@@ -462,6 +463,7 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
           searchMode: searchMode.value,
           onApply: (filterState) => ref.read(meetingRoomFilterStateProvider.notifier).update(filterState),
           onReset: (filterState) => ref.read(meetingRoomFilterStateProvider.notifier).reset(),
+          tappedFormField: tappedFormField,
         ),
       ),
     );
