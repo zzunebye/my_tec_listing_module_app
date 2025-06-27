@@ -9,9 +9,6 @@ class CentreListState extends _$CentreListState {
   @override
   Future<List<CentreDto>> build() async {
     final CoreMeApiService coreMeApiService = ref.read(coreMeApiServiceProvider);
-    // final filter = ref.watch(meetingRoomFilterStateProvider);
-    // print('filter: ${filter.centres}');
-    // final currentCity = ref.watch(currentCityStateProvider);
     final response = await coreMeApiService.getCentres();
     return response;
   }

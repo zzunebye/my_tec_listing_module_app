@@ -16,7 +16,6 @@ class CoworkingListView extends StatelessWidget {
     return ListView.builder(
       itemCount: bookingCoworkingState.length,
       itemBuilder: (BuildContext context, int index) {
-        print(bookingCoworkingState[index]);
         return CoworkingCard(coworkingCentre: bookingCoworkingState[index], filterDay: filterDay);
       },
     );

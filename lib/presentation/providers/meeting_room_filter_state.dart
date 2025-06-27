@@ -12,7 +12,6 @@ class MeetingRoomFilterState extends _$MeetingRoomFilterState {
   }
 
   void update(MeetingRoomFilter newState) {
-    // print('update: $newState');
     state = newState;
   }
 

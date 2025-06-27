@@ -5,10 +5,8 @@ import 'package:my_tec_listing_module_app/presentation/providers/centre_list_sta
 final centresUnderCurrentCityProvider = FutureProvider<List<CentreDto>>((ref) async {
   final currentCity = ref.watch(currentCityStateProvider);
   final centres = await ref.watch(centreListStateProvider.future);
-  print("currentCity: ${currentCity.cityCode}");
   return centres.where((centre) => centre.cityCode == currentCity.cityCode).toList();
 });
-
 
 
 final currentCityStateProvider = StateProvider<CityState>((ref) {

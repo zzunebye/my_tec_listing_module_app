@@ -23,7 +23,6 @@ class MeetingRoomRepository {
     List<CentreDto>? cachedCentres, {
     String cityCode = 'HKG',
   }) async {
-    print('flag D: $cityCode');
 
     // Get centres first to have centre information
     final List<CentreDto> centres = cachedCentres ?? await _coreMeApiService.getCentres();
@@ -94,45 +93,6 @@ class MeetingRoomRepository {
         // distance: distance,
       );
     }).toList();
-
-    // Convert to entities and apply filters
-    // final entities = roomsResponse.items
-    //     .map((room) {
-    //       final availability = availabilityMap[room.roomCode];
-    //       final centre = centresMap[room.centreCode];
-    //       final pricing = pricingMap[room.roomCode];
-
-    //       return MeetingRoomEntity(
-    //         roomCode: room.roomCode,
-    //         roomName: room.roomName,
-    //         centreCode: room.centreCode,
-    //         centreName: centre?.localizedName?['en'] ?? centre?.id ?? 'Unknown Centre',
-    //         centreAddress: centre?.localizedName?['en'] ?? 'Unknown Address',
-    //         floor: room.floor,
-    //         capacity: room.capacity,
-    //         hasVideoConference: room.hasVideoConference,
-    //         amenities: room.amenities,
-    //         photoUrls: room.photoUrls,
-    //         isBookable: room.isBookable,
-    //         isAvailable: availability?['isAvailable'] ?? false,
-    //         finalPrice: pricing?.finalPrice.toDouble(),
-    //         currencyCode: pricing?.currencyCode,
-    //         bestPricingStrategyName: pricing?.bestPricingStrategyName,
-    //         isWithinOfficeHour: availability?['isWithinOfficeHour'],
-    //       );
-    //     })
-    //     .where((entity) {
-    //       // print('flag F: ${filter.centres}');
-    //       // print('flag G: ${filter.centres.contains(entity.centreName)}');
-    //       // Apply filters
-    //       if (entity.capacity < filter.capacity) return false;
-    //       if (filter.canVideoConference && !entity.hasVideoConference) return false;
-    //       // if (filter.centres.isNotEmpty && !filter.centres.contains(entity.centreName)) return false;
-    //       // if (!entity.isBookable) return false;
-
-    //       return true;
-    //     })
-    //     .toList();
 
     return groupedMeetingRoomEntities;
   }
