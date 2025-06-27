@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:my_tec_listing_module_app/app_theme.dart';
+import 'package:my_tec_listing_module_app/theme/app_theme.dart';
 import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
 import 'package:my_tec_listing_module_app/domain/entities/grouped_meeting_room_entity.dart';
 import 'package:my_tec_listing_module_app/domain/repositories/meeting_room_repository.dart';
@@ -240,7 +240,10 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: isFullScreen.value == false
-                      ? const BorderRadius.only(topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0))
+                      ? const BorderRadius.only(
+                          topLeft: Radius.circular(AppBorderRadius.normal),
+                          topRight: Radius.circular(AppBorderRadius.normal),
+                        )
                       : BorderRadius.zero,
                 ),
                 child: CustomScrollView(
@@ -258,8 +261,8 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.surface,
                           borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(AppBorderRadius.large),
-                            topRight: Radius.circular(AppBorderRadius.large),
+                            topLeft: Radius.circular(AppBorderRadius.normal),
+                            topRight: Radius.circular(AppBorderRadius.normal),
                           ),
                         ),
                         child: Align(
@@ -284,13 +287,13 @@ class _BookingListScreenState extends ConsumerState<BookingListScreen> {
                         child: GestureDetector(
                           behavior: isFullScreen.value == true ? HitTestBehavior.opaque : HitTestBehavior.deferToChild,
                           onTapDown: (details) {
-                            print('tap down');
+                            debugPrint('tap down');
                           },
                           onPanDown: (details) {
-                            print('pan down');
+                            debugPrint('pan down');
                           },
                           onVerticalDragUpdate: (details) {
-                            print('vertical drag update');
+                            debugPrint('vertical drag update');
                           },
                           child: Column(
                             children: [

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tec_listing_module_app/app_theme.dart';
+import 'package:my_tec_listing_module_app/theme/app_theme.dart';
 import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
 import 'package:my_tec_listing_module_app/utils/date.dart';
 
@@ -28,13 +28,6 @@ class CoworkingCard extends StatelessWidget {
           SizedBox(
             height: 200,
             width: double.infinity,
-            // decoration: BoxDecoration(
-            //   borderRadius: BorderRadius.only(topLeft: Radius.circular(12.0), topRight: Radius.circular(12.0)),
-            //   image: DecorationImage(
-            //     image: AssetImage('assets/images/tec_map_sample.png'),
-            //     fit: BoxFit.cover,
-            //   ),
-            // ),
             child: Stack(
               children: [
                 Positioned.fill(
@@ -66,8 +59,8 @@ class CoworkingCard extends StatelessWidget {
                           ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).colorScheme.surface,
                       borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(12.0),
-                        topRight: Radius.circular(12.0),
+                        bottomLeft: Radius.circular(AppBorderRadius.normal),
+                        topRight: Radius.circular(AppBorderRadius.normal),
                       ),
                     ),
                     child: Text(

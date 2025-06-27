@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tec_listing_module_app/app_theme.dart';
+import 'package:my_tec_listing_module_app/theme/app_theme.dart';
 import 'package:my_tec_listing_module_app/domain/entities/meeting_room_entity.dart';
 
 class MeetingRoomDetailScreen extends StatelessWidget {
@@ -24,7 +24,7 @@ class MeetingRoomDetailScreen extends StatelessWidget {
                   decoration: BoxDecoration(color: Colors.grey.shade100),
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(12.0),
+                      padding: const EdgeInsets.all(AppSpacing.small),
                       child: Text(
                         'Room Name: ${entity.roomName}',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -46,7 +46,7 @@ class MeetingRoomDetailScreen extends StatelessWidget {
                       (row) => TableRow(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.all(12.0),
+                            padding: const EdgeInsets.all(AppSpacing.small),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -65,7 +65,7 @@ class MeetingRoomDetailScreen extends StatelessWidget {
                   TableRow(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(12.0),
+                        padding: const EdgeInsets.all(AppSpacing.small),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -80,7 +80,7 @@ class MeetingRoomDetailScreen extends StatelessWidget {
                   TableRow(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(12.0),
+                        padding: const EdgeInsets.all(AppSpacing.small),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -95,7 +95,7 @@ class MeetingRoomDetailScreen extends StatelessWidget {
                   TableRow(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(12.0),
+                        padding: const EdgeInsets.all(AppSpacing.small),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -110,7 +110,7 @@ class MeetingRoomDetailScreen extends StatelessWidget {
                   TableRow(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(12.0),
+                        padding: const EdgeInsets.all(AppSpacing.small),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

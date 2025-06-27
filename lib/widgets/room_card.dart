@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tec_listing_module_app/app_theme.dart';
+import 'package:my_tec_listing_module_app/theme/app_theme.dart';
 import 'package:my_tec_listing_module_app/domain/entities/meeting_room_entity.dart';
 import 'package:my_tec_listing_module_app/utils/date.dart';
 
@@ -52,7 +52,7 @@ class MeetingRoomCard extends StatelessWidget {
                 children: [
                   Positioned.fill(
                     child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(12.0)),
+                      borderRadius: const BorderRadius.all(Radius.circular(AppBorderRadius.normal)),
                       child: ColorFiltered(
                         colorFilter: meetingRoom.isUnavailable
                             ? ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.darken)
@@ -97,8 +97,8 @@ class MeetingRoomCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.surface,
                           borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(12.0),
-                            topRight: Radius.circular(12.0),
+                            bottomLeft: Radius.circular(AppBorderRadius.normal),
+                            topRight: Radius.circular(AppBorderRadius.normal),
                           ),
                         ),
 
