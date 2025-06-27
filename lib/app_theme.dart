@@ -71,15 +71,16 @@ class AppTheme {
       indicatorSize: TabBarIndicatorSize.label,
       indicatorColor: AppColors.primary,
     ),
-
+    textTheme: appTextTheme,
     chipTheme: ChipThemeData(
       elevation: 1,
+      labelStyle: appTextTheme.labelSmall?.copyWith(color: AppColors.onSurface),
       iconTheme: IconThemeData(color: AppColors.subtitle, size: 18.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppBorderRadius.large)),
-      labelStyle: TextStyle(color: AppColors.onSurface),
+      labelPadding: EdgeInsets.only(right: 8),
+      padding: EdgeInsets.zero,
       backgroundColor: AppColors.surface,
     ),
-    textTheme: const TextTheme(),
     scaffoldBackgroundColor: AppColors.background,
     dividerColor: AppColors.divider,
     disabledColor: AppColors.disabled,
@@ -130,26 +131,27 @@ class AppTheme {
       outline: AppColorsDark.border,
       outlineVariant: AppColorsDark.border,
     ),
+    textTheme: appTextTheme,
     inputDecorationTheme: InputDecorationTheme(
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppBorderRadius.large)),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppBorderRadius.normal)),
       contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.small, vertical: AppSpacing.xSmall),
       floatingLabelBehavior: FloatingLabelBehavior.never,
       iconColor: AppColorsDark.subtitle,
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(color: AppColorsDark.border),
-        borderRadius: BorderRadius.circular(AppBorderRadius.large),
+        borderRadius: BorderRadius.circular(AppBorderRadius.normal),
       ),
       focusedBorder: OutlineInputBorder(
         borderSide: BorderSide(color: AppColorsDark.border),
-        borderRadius: BorderRadius.circular(AppBorderRadius.large),
+        borderRadius: BorderRadius.circular(AppBorderRadius.normal),
       ),
       errorBorder: OutlineInputBorder(
         borderSide: BorderSide(color: AppColorsDark.error),
-        borderRadius: BorderRadius.circular(AppBorderRadius.large),
+        borderRadius: BorderRadius.circular(AppBorderRadius.normal),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderSide: BorderSide(color: AppColorsDark.error),
-        borderRadius: BorderRadius.circular(AppBorderRadius.large),
+        borderRadius: BorderRadius.circular(AppBorderRadius.normal),
       ),
     ),
     tabBarTheme: TabBarThemeData(
@@ -173,7 +175,6 @@ class AppTheme {
       labelStyle: TextStyle(color: AppColorsDark.onSurface),
       backgroundColor: AppColorsDark.surface,
     ),
-    textTheme: const TextTheme(),
     scaffoldBackgroundColor: AppColorsDark.background,
     dividerColor: AppColorsDark.divider,
     disabledColor: AppColorsDark.disabled,
@@ -307,3 +308,5 @@ class AppColorsDark {
 
   static const border = Color(0xFF424242);
 }
+
+const appTextTheme = TextTheme();

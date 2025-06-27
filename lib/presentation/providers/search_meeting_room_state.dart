@@ -24,7 +24,6 @@ class SearchMeetingRoomState extends _$SearchMeetingRoomState {
       centresUnderCurrentCity,
       cityCode: currentCityEntity.cityCode,
     );
-    // debugPrint('flag!: $meetingRooms');
     return meetingRooms;
   }
 }
