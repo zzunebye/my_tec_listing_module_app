@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_tec_listing_module_app/theme/app_theme.dart';
+import 'package:my_tec_listing_module_app/app_theme.dart';
 
 class FilterChip extends StatelessWidget {
   const FilterChip({super.key, required this.label, required this.icon, required this.onTap});

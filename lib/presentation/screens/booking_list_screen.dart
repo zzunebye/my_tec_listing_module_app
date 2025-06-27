@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:my_tec_listing_module_app/theme/app_theme.dart';
+import 'package:my_tec_listing_module_app/app_theme.dart';
 import 'package:my_tec_listing_module_app/data/dto/centre_dto.dart';
 import 'package:my_tec_listing_module_app/domain/entities/grouped_meeting_room_entity.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/search_coworking_state.dart';

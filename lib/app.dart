@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:my_tec_listing_module_app/theme/app_theme.dart';
+import 'package:my_tec_listing_module_app/app_theme.dart';
 import 'package:my_tec_listing_module_app/domain/entities/meeting_room_entity.dart';
 import 'package:my_tec_listing_module_app/presentation/providers/centre_list_state.dart';
 import 'package:my_tec_listing_module_app/presentation/screens/booking_list_screen.dart';
