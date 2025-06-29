@@ -11,7 +11,7 @@ class CoreClient {
         baseUrl: 'https://octo.pr-product-core.executivecentre.net/core-api/api/v1/',
         connectTimeout: const Duration(seconds: 5),
         receiveTimeout: const Duration(seconds: 3),
-        headers: {'Accept': '*/*', 'x-access-key': 'qui_aute_fugiat_irure'},
+        headers: {'Accept': '*/*', 'x-access-key': const String.fromEnvironment('ACCESS_KEY')},
       ),
     );
     _setupInterceptors();
@@ -55,7 +55,7 @@ final coreMeDioProvider = Provider<Dio>((ref) {
         baseUrl: 'https://octo.pr-product-core.executivecentre.net/core-api-me/api/v1/',
         connectTimeout: const Duration(seconds: 5),
         receiveTimeout: const Duration(seconds: 12),
-        headers: {'Accept': '*/*', 'x-access-key': 'qui_aute_fugiat_irure'},
+        headers: {'Accept': '*/*', 'x-access-key': const String.fromEnvironment('ACCESS_KEY')},
       ),
     )
     ..interceptors.add(
@@ -78,9 +78,3 @@ final coreMeDioProvider = Provider<Dio>((ref) {
       ),
     );
 });
-
-
-
-
-// qui_aute_fugiat_irure
-// {{ProfileId}}
