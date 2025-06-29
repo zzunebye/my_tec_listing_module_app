@@ -120,6 +120,11 @@ lib/
   - filter_bottom_sheet: A bottom sheet for filtering meeting room data. Always triggered to be shown when the user change the tab as well.
   - meeting_room_list_view: A list view for meeting room data.
 
+### Riverpod Provider Dependency
+
+This is one of the example to assist understanding the dependency of the providers:
+
+![diagram-riverpod.png](diagram-riverpod.png)
 
 ### Blocker for DraggableScrollableSheet
 
@@ -167,6 +172,13 @@ The booking_list_screen implements a draggable bottom sheet interface using `Dra
 - Some debug print statements left in production code
 - Missing unit tests.
 - Multi-language infrastructure not existing, some UI strings are hardcoded
+
+### Improvement Points
+
+- Optimized the provider dependencies since the current implemenation may not be easy to understand, and also maintain.
+- Break UI components into smaller components to make it easier to maintain.
+- Write unit tests.
+
 
 ## UI/UX Differences from original app
 
