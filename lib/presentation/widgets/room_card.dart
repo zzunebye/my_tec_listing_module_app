@@ -146,7 +146,9 @@ class MeetingRoomCard extends StatelessWidget {
 
                       const SizedBox(height: AppSpacing.xSmall),
                       Text(
-                        priceText ?? 'Price not available',
+                        meetingRoom.pricePerHour != null
+                            ? '${meetingRoom.pricePerHour!.toStringAsFixed(0)} KRW/hr'
+                            : 'Price not available',
                         style: Theme.of(
                           context,
                         ).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.primary),
