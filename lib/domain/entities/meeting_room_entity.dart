@@ -11,6 +11,7 @@ class MeetingRoomEntity {
   final List<String>? photoUrls;
   final bool isBookable;
   final bool isAvailable;
+  final double? pricePerHour;
   final double? finalPrice;
   final String? currencyCode;
   final String? bestPricingStrategyName;
@@ -30,6 +31,7 @@ class MeetingRoomEntity {
     this.photoUrls,
     required this.isBookable,
     required this.isAvailable,
+    this.pricePerHour,
     this.finalPrice,
     this.currencyCode,
     this.bestPricingStrategyName,

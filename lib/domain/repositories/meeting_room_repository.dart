@@ -23,7 +23,6 @@ class MeetingRoomRepository {
     List<CentreDto>? cachedCentres, {
     String cityCode = 'HKG',
   }) async {
-
     // Get centres first to have centre information
     final List<CentreDto> centres = cachedCentres ?? await _coreMeApiService.getCentres();
 
@@ -62,6 +61,10 @@ class MeetingRoomRepository {
               final availability = availabilityMap[room.roomCode];
               final pricing = pricingMap[room.roomCode];
 
+              final pricePerHour = pricing?.finalPrice != null
+                  ? pricing!.finalPrice.toDouble() / (filter.endTime.difference(filter.startTime).inMinutes / 60)
+                  : null;
+
               return MeetingRoomEntity(
                 roomCode: room.roomCode,
                 roomName: room.roomName,
@@ -70,6 +73,7 @@ class MeetingRoomRepository {
                 centreAddress: centre?.localizedName?['en'] ?? 'Unknown Address',
                 floor: room.floor,
                 capacity: room.capacity,
+                pricePerHour: pricePerHour,
                 hasVideoConference: room.hasVideoConference,
                 amenities: room.amenities,
                 photoUrls: room.photoUrls,
